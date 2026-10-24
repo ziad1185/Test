@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحديثة للغاز الطبيعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F4F3;
+    --panel: #FFFFFF;
+    --ink: #1A1F1E;
+    --ink-soft: #5B6664;
+    --line: #DDE3E1;
+    --navy: #1B3A4B;
+    --navy-soft: #274C61;
+    --amber: #E8A33D;
+    --amber-soft: #FBEBD3;
+    --good: #3A7D5C;
+    --good-bg: #E7F3EC;
+    --bad: #B8433D;
+    --bad-bg: #FBEAE8;
+    --row-alt: #F7F9F8;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  h1, h2, h3 { margin: 0; font-weight: 700; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select { font-family: inherit; }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* ===== MOBILE TOPBAR (hidden on desktop) ===== */
+  .mobile-topbar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .mobile-topbar .brand-mini {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 14.5px;
+  }
+  .mobile-topbar .brand-mini .dot {
+    width: 32px; height: 32px;
+    background: #fff;
+    color: var(--navy);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 3px;
+  }
+  .menu-btn {
+    background: none; border: none;
+    color: #fff;
+    font-size: 22px;
+    padding: 4px 8px;
+    line-height: 1;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 60;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: var(--navy);
+    color: #EAF1F0;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 0;
+  }
+  .sidebar-close {
+    display: none;
+  }
+  .brand {
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 14px;
+  }
+  .brand-mark {
+    width: 44px; height: 44px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    padding: 4px;
+  }
+  .brand-mark img, .dot img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  .brand-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .brand-sub { font-size: 12px; color: #A9C0C2; margin-top: 2px; }
+
+  .nav-group { margin-bottom: 4px; }
+  .nav-head {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    background: none; border: none;
+    color: #EAF1F0;
+    padding: 13px 20px;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-align: right;
+    transition: background .15s;
+  }
+  .nav-head:hover { background: rgba(255,255,255,0.06); }
+  .nav-head.active { background: rgba(255,255,255,0.08); }
+  .nav-head .chev { font-size: 11px; transition: transform .2s; color: #A9C0C2; }
+  .nav-head.open .chev { transform: rotate(180deg); }
+
+  .nav-sub {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .22s ease;
+    background: rgba(0,0,0,0.14);
+  }
+  .nav-sub.open { max-height: 400px; }
+  .nav-link {
+    display: block;
+    width: 100%;
+    background: none; border: none;
+    color: #C7D6D5;
+    text-align: right;
+    padding: 10px 20px 10px 20px;
+    padding-right: 38px;
+    font-size: 13.5px;
+    border-right: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .nav-link:hover { color: #fff; }
+  .nav-link.active {
+    color: #fff;
+    border-right-color: var(--amber);
+    background: rgba(255,255,255,0.05);
+    font-weight: 600;
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 28px 34px 60px 34px;
+  }
+  .page-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-head h1 { font-size: 21px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .breadcrumb { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 6px; }
+  .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  select.dd.title-select {
+    width: auto;
+    min-width: 130px;
+    padding: 6px 30px 6px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    border-color: var(--navy);
+  }
+  .title-meta {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--row-alt);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 12px;
+  }
+  .title-meta:empty { display: none; }
+
+  tr.pressure-header-row th {
+    background: var(--navy-soft) !important;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+.pressure-header-row th {
+  padding: 8px 12px; /* إضافة مسافات (Padding) لخلايا الجدول عشان ما تبقاش لازقة */
+  white-space: nowrap; /* منع انقسام النص على أكثر من سطر بشكل مزعج */
+}
+
+.pressure-inline {
+  display: inline-flex !important;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.pressure-inline input {
+  width: 40px !important;  /* تصغير العرض من 400px إلى 120px لأنه أكتر من كفاية لكلمة زي "4 bar" */
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--navy-soft) !important;
+  border-radius: 4px;
+  background: var(--navy-soft) !important;
+  color: #fff !important;
+  font-size: 11.5px;
+  font-weight: 600;
+  
+  text-align: center;
+}
+
+.pressure-inline input:focus {
+  outline: none;
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--amber);
+}
+
+  .parts-box {
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 12px;
+    background: #fff;
+    min-height: 42px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+  }
+  .parts-empty { font-size: 12.5px; color: var(--ink-soft); }
+  .part-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .part-check input { width: 16px; height: 16px; cursor: pointer; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .field-select {
+    max-width: 340px;
+    margin-bottom: 4px;
+  }
+  label.top-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 7px;
+  }
+  select.big-select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--navy);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%231B3A4B' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 14px center;
+  }
+  select.big-select:focus, input:focus, select:focus {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+  }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 20px;
+    margin-top: 20px;
+  }
+  @media (max-width: 900px) {
+    .form-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .f-item label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .f-item input[type=text], .f-item input[type=date], .f-item input[type=number] {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    font-size: 14px;
+    background: #fff;
+  }
+  .f-item select.dd {
+    width: 100%;
+    padding: 9px 34px 9px 11px;
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #fff;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%235B6664' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 12px center;
+    transition: background-color .15s, color .15s;
+  }
+  .f-item select.dd.dd-good { background-color: var(--good-bg); color: var(--good); border-color: var(--good); }
+  .f-item select.dd.dd-bad { background-color: var(--bad-bg); color: var(--bad); border-color: var(--bad); }
+
+  .f-item.wide { grid-column: span 2; }
+  .f-item.full { grid-column: 1 / -1; }
+  textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 9px 11px;
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  .form-actions {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    padding: 10px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy-soft); }
+  .btn-ghost { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
+  .btn-amber { background: var(--amber); color: var(--navy); }
+  .btn-amber:hover { filter: brightness(0.95); }
+
+  /* Section tables (regulator cards) */
+  .sec-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 26px 0 10px 0;
+    padding-right: 10px;
+    border-right: 3px solid var(--amber);
+  }
+  .sec-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 26px 0 10px 0;
+  }
+  .sec-title-row .sec-title { margin: 0; }
+  .btn-add-row {
+    background: var(--amber-soft);
+    color: #8A5A12;
+    border: 1px solid var(--amber);
+    border-radius: 7px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-add-row:hover { background: var(--amber); color: var(--navy); }
+
+  table.data-tbl {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    font-size: 13.3px;
+  }
+  table.data-tbl th {
+    background: var(--navy);
+    color: #EAF1F0;
+    font-weight: 600;
+    padding: 10px 12px;
+    text-align: right;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  table.data-tbl td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  table.data-tbl td:last-child { border-left: none; }
+  table.data-tbl tbody tr.row-alt td { background: var(--row-alt); }
+  table.data-tbl td.row-label {
+    font-weight: 600;
+    color: var(--navy-soft);
+    white-space: nowrap;
+    background: #EFF3F2;
+  }
+  table.data-tbl tbody tr.row-alt td.row-label { background: #E7ECEA; }
+
+  /* صفوف عناوين المجموعات الفرعية (Stream 1 / Stream 2 / الحماية الكاثودية) */
+  table.data-tbl tr.subgroup-head td {
+    background: var(--navy-soft) !important;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  table.data-tbl tr.subgroup-stream1 td:not(.subgroup-head td) { background: #FBEBD3; }
+  table.data-tbl tr.subgroup-stream1.row-alt td { background: #F6E0B8; }
+  table.data-tbl tr.subgroup-stream2 td { background: #DCEEE6; }
+  table.data-tbl tr.subgroup-stream2.row-alt td { background: #CBE4D9; }
+  table.data-tbl tr.subgroup-cathodic td { background: #E4E9F5; }
+  table.data-tbl tr.subgroup-cathodic.row-alt td { background: #D6DEF0; }
+
+  table.data-tbl input {
+    width: 100%;
+    min-width: 90px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    padding: 7px 9px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  table.data-tbl select.dd {
+    padding: 6px 26px 6px 8px;
+    font-size: 12.5px;
+    min-width: 110px;
+  }
+  table.data-tbl input:disabled, table.data-tbl select:disabled,
+  .form-grid input:disabled, .form-grid select:disabled {
+    background: #F0F2F1;
+    color: var(--ink-soft);
+    cursor: not-allowed;
+  }
+  table.data-tbl input:hover { border-color: #B9C4C2; }
+  table.data-tbl input:focus { border-color: var(--amber); outline: none; box-shadow: 0 0 0 2px var(--amber-soft); }
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; -webkit-overflow-scrolling: touch; }
+  .tbl-wrap table { border: none; }
+  .btn-del-row {
+    background: var(--bad-bg);
+    color: var(--bad);
+    border: 1px solid var(--bad);
+    border-radius: 5px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .btn-del-row:hover { background: var(--bad); color: #fff; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .two-col > div { min-width: 0; }
+  @media (max-width: 1000px) { .two-col { grid-template-columns: 1fr; } }
+
+  .badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--amber-soft);
+    color: #8A5A12;
+    margin-right: 8px;
+  }
+
+  /* Report filter bar */
+  .filter-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-item label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+  .filter-item input[type=date] {
+    padding: 9px 11px;
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    font-size: 14px;
+  }
+
+  .report-hidden { display: none; }
+  .report-title {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .report-title h2 { font-size: 17px; color: var(--navy); }
+  .report-title p { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  .empty-note {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+
+  /* Tablet: tighten spacing, 2-col form grid already handled at 900px above */
+  @media (max-width: 1000px) {
+    .main { padding: 24px 20px 50px 20px; }
+  }
+
+  /* Mobile: collapse sidebar into a slide-in drawer */
+  @media (max-width: 780px) {
+    .mobile-topbar { display: flex; }
+
+    .app { flex-direction: column; }
+
+    .sidebar {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 82%;
+      max-width: 300px;
+      transform: translateX(100%);
+      transition: transform .25s ease;
+      z-index: 70;
+      box-shadow: -8px 0 24px rgba(0,0,0,0.25);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-close {
+      display: block;
+      position: absolute;
+      left: 14px;
+      top: 18px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      padding: 4px 8px;
+    }
+
+    .main { padding: 18px 14px 44px 14px; }
+
+    .page-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .page-head h1 { font-size: 18px; }
+
+    .panel { padding: 16px 14px; border-radius: 8px; }
+
+    .form-grid { grid-template-columns: 1fr; gap: 14px; }
+    .f-item.wide, .f-item.full { grid-column: 1 / -1; }
+
+    .two-col { grid-template-columns: 1fr; }
+
+    .filter-bar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .filter-bar .btn { width: 100%; }
+
+    .form-actions { flex-direction: column; }
+    .form-actions .btn { width: 100%; }
+
+    .sec-title { font-size: 13.5px; margin: 20px 0 8px 0; }
+
+    .sec-title-row { flex-wrap: wrap; }
+    .btn-add-row { font-size: 12px; padding: 5px 10px; }
+
+    table.data-tbl { font-size: 12.5px; min-width: 460px; }
+    table.data-tbl th, table.data-tbl td { padding: 7px 8px; }
+  }
+
+  @media (max-width: 420px) {
+    .brand-name { font-size: 14px; }
+    select.big-select { font-size: 13.5px; }
+  }
+
+
+  /* ===== متابعة الصيانة الوقائية (جدول مضغوط بدون سكرول) ===== */
+  .pm-wrap { width: 100%; max-width: 100%; }
+  table.pm-tbl { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 11.5px; }
+  table.pm-tbl th { background: var(--navy); color: #EAF1F0; font-weight: 600; padding: 6px 3px; text-align: center; font-size: 10.5px; line-height: 1.25; word-break: break-word; }
+  table.pm-tbl td { padding: 3px 2px; border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); text-align: center; overflow: hidden; }
+  table.pm-tbl td:last-child { border-left: none; }
+  table.pm-tbl tbody tr:nth-child(even) td { background: var(--row-alt); }
+  table.pm-tbl td.row-label { font-weight: 600; color: var(--navy-soft); font-size: 11px; background: #EFF3F2; }
+  table.pm-tbl tbody tr:nth-child(even) td.row-label { background: #E7ECEA; }
+  table.pm-tbl thead tr:nth-child(2) th { background: var(--navy-soft); font-size: 9.5px; padding: 4px 2px; }
+  table.pm-tbl input[type=checkbox], table.pm-tbl input[type=radio] { width: 14px; height: 14px; min-width: 0; padding: 0; cursor: pointer; }
+  select.classify-dd { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 2px 3px; font-size: 9.5px; background: #fff; }
+  select.classify-dd:focus { outline: none; border-color: var(--amber); }
+  table.pm-tbl input[type=date] { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 4px; padding: 2px 1px; font-size: 9.5px; text-align: center; }
+  table.pm-tbl input[type=text] { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 4px; padding: 2px 4px; font-size: 10.5px; }
+  table.pm-tbl input:focus { outline: none; border-color: var(--amber); background: #fff; box-shadow: none; }
+  .col-block { width: 3.5%; } .col-building { width: 3.5%; } .col-radio { width: 4.1%; }
+  .col-classify { width: 11%; } .col-date { width: 8%; } .col-note { width: 15%; }
+  .fab-save { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(0); z-index: 40; background: var(--navy); color: #fff; border: none; padding: 13px 30px; border-radius: 30px; font-size: 14.5px; font-weight: 700; box-shadow: 0 6px 20px rgba(27,58,75,0.35); display: flex; align-items: center; gap: 8px; transition: transform .25s ease, opacity .25s ease; opacity: 1; }
+  .fab-save:hover { background: var(--navy-soft); }
+  .fab-save.fab-hidden { transform: translateX(-50%) translateY(120%); opacity: 0; pointer-events: none; }
+  .fab-save .fab-icon { font-size: 16px; }
+  @media (max-width: 700px) {
+    table.pm-tbl { font-size: 10px; }
+    table.pm-tbl th { font-size: 9px; padding: 5px 2px; }
+    .fab-save { padding: 11px 22px; font-size: 13px; bottom: 16px; }
+  }
+
+  @media print {
+    .sidebar, .filter-bar, .no-print, .form-actions { display: none !important; }
+    .main { padding: 0; }
+    .panel { border: none; padding: 0; }
+    body { background: #fff; }
+    .page-head { border-bottom: 2px solid #000; margin-bottom: 16px; padding-bottom: 10px; }
+    table.data-tbl { min-width: 0; }
+    .tbl-wrap { overflow: visible; border: none; }
+    table.data-tbl th { background: #E5E5E5 !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ MOBILE TOPBAR ============ -->
+  <div class="mobile-topbar">
+    <div class="brand-mini">
+      <div class="dot" id="logoMiniSlot"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iMTMwMCI+PHBhdGggZmlsbD0iIzE0OTI0OSIgZD0iTTg5MiA0ODFjMy45NyA0LjY2IDQuMTIgOS4wNCA0LjEzIDE1LjAxLjAxIDEuMjEuMDEgMi40Mi4wMiAzLjY3djQuMDNjMCAxLjQzIDAgMi44NS4wMSA0LjI4LjAxIDMuOTMuMDEgNy44NS4wMSAxMS43OGwuMDMgMTIuN2MuMDIgMTAuMjMuMDMgMjAuNDUuMDQgMzAuNjcgMCA0LjgyLjAxIDkuNjQuMDEgMTQuNDUuMDIgMTYuMDEuMDMgMzIuMDIuMDQgNDguMDMgMCA0LjE2IDAgOC4zMS4wMSAxMi40NnYzLjEzYzAgMTYuNzMuMDMgMzMuNDUuMDYgNTAuMTguMDQgMTcuMTcuMDUgMzQuMzQuMDYgNTEuNTJxMCAxNC40Ni4wMyAyOC45MmMuMDMgOC4yMS4wMyAxNi40Mi4wMiAyNC42MyAwIDQuMTkgMCA4LjM4LjAyIDEyLjU3LjAyIDMuODMuMDIgNy42NyAwIDExLjUxIDAgMi4wNC4wMSA0LjA3LjAzIDYuMTEtLjA1IDcuNjEtMS4wNSAxMy41NC00LjUyIDIwLjM1LTYuODkgMi41Ny0xMy43MiAyLjMxLTIxIDIuMy0xLjM2IDAtMi43My4wMS00LjA5LjAxLTIuODUuMDEtNS43LjAxLTguNTQuMDEtMy42NC0uMDEtNy4yNy4wMS0xMC45MS4wMy0yLjgxLjAxLTUuNjIuMDItOC40My4wMS0xLjk5IDAtMy45OC4wMi01Ljk2LjAzLTYuNDQtLjAzLTExLjQtLjItMTcuMDctMy4zOS0yLjg3LTQuODMtMy40My04Ljg1LTMuNC0xNC4zNS0uMDEtLjgzLS4wMS0xLjY1LS4wMi0yLjUxLS4wMi0yLjc1LS4wMS01LjUxLS4wMS04LjI3bC0uMDMtNS45NWMtLjAzLTUuMzctLjA0LTEwLjc0LS4wNS0xNi4xMi0uMDEtNS42MS0uMDMtMTEuMjMtLjA2LTE2Ljg1LS4wNC0xMC42My0uMDctMjEuMjctLjA5LTMxLjlxLS4wNDUtMTguMTY1LS4xMi0zNi4zM2MtLjA5LTI0LjkxLS4xNi00OS44MS0uMjItNzQuNzJsLTItM2MtNC41Ni41Ny03Ljk3IDIuNS0xMS44MSA0Ljg4LS42NS4zOS0xLjMuNzktMS45NyAxLjItNS41NyAzLjQzLTEwLjk2IDcuMTEtMTYuMzMgMTAuODQtNC4wNSAyLjgzLTguMTUgNS41Ni0xMi4zMyA4LjItNi42NiA0LjIzLTEzLjE3IDguNjgtMTkuNjggMTMuMTMtMTIuODIgOC43NS0yNS43OCAxNy4yNi0zOC44OCAyNS41Ni03Ljg5IDUuMDEtMTUuNjQgMTAuMjMtMjMuMzEgMTUuNTctMTEuMjQgNy44LTIyLjY3IDE1LjI4LTM0LjE2IDIyLjY5LTUuNzcgMy43My0xMS41MiA3LjQ3LTE3LjI4IDExLjIyLTQuMzYgMi44NC04LjczIDUuNjYtMTMuMTIgOC40Ni01LjE1IDMuMjktMTAuMjIgNi42Ni0xNS4yMSAxMC4yYTk1OSA5NTkgMCAwIDEtMTEuODYgOC4xN2MtLjgxLjU2LTEuNjMgMS4xMi0yLjQ3IDEuNjktMS42OCAxLjE1LTMuMzcgMi4zLTUuMDUgMy40Ni0yLjQ5IDEuNy00Ljk4IDMuNC03LjQ3IDUuMTEtNy45NiA1LjQ2LTE1Ljk1IDEwLjg5LTI0IDE2LjIzLTQuMTggMi43OC04LjMxIDUuNjQtMTIuNDEgOC41NC00IDIuNzgtOC4wNiA1LjQ1LTEyLjEzIDguMTItMy45MyAyLjYtNy43IDUuMzQtMTEuNDUgOC4xOC0zLjYyIDIuNjktNy4zNSA1LjIxLTExLjA4IDcuNzQtMS42OCAxLjE0LTMuMzYgMi4yOS01LjA1IDMuNDMtLjQxLjI5LS40MS4yOS0yLjUyIDEuNzItMy41NyAyLjQ0LTcuMTIgNC44OS0xMC42OCA3LjM1LTUuMTUgMy41NS0xMC4zNCA3LjA0LTE1LjU2IDEwLjUtNS4yOCAzLjQ5LTEwLjQyIDcuMTMtMTUuNTIgMTAuODgtNS43NCA0LjE0LTExLjY5IDcuOTctMTcuNiAxMS44Ni02LjEyIDQuMDQtMTIuMTIgOC4yMi0xOC4wNyAxMi40OS00LjYgMy4zMS05LjI3IDYuNDctMTQgOS41OC0yLjk3IDEuOTgtNS45MyAzLjk1LTguODkgNS45My0yLjA0IDEuMzYtNC4wOCAyLjctNi4xMiA0LjA0LTYuMTggNC4wNi0xMi4xNSA4LjMyLTE4LjAzIDEyLjgtMy43OSAyLjg2LTcuNjggNS41OS0xMS41OCA4LjMxLTUuNzQgNC42NC03LjI1IDguODctOC4zOCAxNS45Mi0uMjUgMy4xOC0uMjcgNi4zNC0uMjUgOS41M3YyLjc3Yy0uMDEgMy4wNSAwIDYuMDkuMDEgOS4xNCAwIDIuMi0uMDEgNC4zOS0uMDEgNi41OCAwIDUuOTQgMCAxMS44OS4wMSAxNy44My4wMSA2LjIyLjAxIDEyLjQ1LjAxIDE4LjY4IDAgMTAuNDUuMDEgMjAuOS4wMiAzMS4zNi4wMiAxMC43NC4wMyAyMS40OC4wMiAzMi4yMnY0LjAxYzAgMTIuODcuMDEgMjUuNzQuMDIgMzguNjF2MTEuMTFjMCA1LjgyLjAxIDExLjY1LjAyIDE3LjQ3djYuNDFjMCAyLjkyLjAxIDUuODMuMDIgOC43NSAwIC40MiAwIC40Mi0uMDEgMi41NS4wNiAxNC45LjA2IDE0LjkgNi4xNCAyMC45OCAzLjc0IDEuMTkgNy40MiAxLjE0IDExLjMgMS4xM2gyLjI0YzIuNS4wMSA1IC4wMSA3LjQ5IDAgMS44LjAxIDMuNi4wMSA1LjQxLjAxIDQuOTYuMDEgOS45Mi4wMSAxNC44OC4wMSA1LjM1IDAgMTAuNyAwIDE2LjA0LjAxIDEwLjQ4IDAgMjAuOTYuMDEgMzEuNDQuMDFoMjUuNTVjMjQuMTMuMDEgNDguMjYuMDIgNzIuMzguMDJoNy45YzIxLjEyLS4wMSA0Mi4yNSAwIDYzLjM3LjAyIDIxLjY4LjAxIDQzLjM1LjAyIDY1LjAzLjAyIDEyLjE4IDAgMjQuMzUgMCAzNi41My4wMSAxMC4zNi4wMSAyMC43My4wMSAzMS4wOS4wMSA1LjI5LS4wMSAxMC41OC0uMDEgMTUuODggMHE3LjI2LjAxNSAxNC41MiAwYzEuNzUgMCAzLjUxIDAgNS4yNi4wMSAyLjM4IDAgNC43NiAwIDcuMTQtLjAxLjM0IDAgLjM0IDAgMi4wNy4wMSA0LjE5LS4wMyA3LjU4LS43NCAxMS40OC0yLjI2IDIuNDgtNC4zNSAzLjM3LTcuNDYgMy4zNi0xMi40NSAwLTEuMjguMDEtMi41Ni4wMS0zLjg4bC0uMDMtNC4yMXYtNC40N2MwLTQuMDMtLjAxLTguMDYtLjA0LTEyLjA5LS4wMS00LjIyLS4wMi04LjQzLS4wMi0xMi42NS0uMDEtNy45OC0uMDMtMTUuOTYtLjA2LTIzLjkzLS4wNC05LjA5LS4wNS0xOC4xOC0uMDctMjcuMjYtLjA5LTU1Ljk2LS4wOS01NS45Ni0zLjE1LTYxLjA2LTYuNDMtMi4zMy0xMi40NC0yLjI0LTE5LjIzLTIuMTdsLTUuNzUuMDNjLTIuMDkuMDEtNC4xNy4wMi02LjI2LjA0LTYuOTMuMDUtMTMuODcuMDYtMjAuOC4wNy0xLjY5LjAxLTMuMzcuMDEtNS4wNS4wMi0zMy4zNy4wNy02Ni43My0uMy0xMDAuMDktLjYyLTEyLjE5LS4xMS0yNC4zOC0uMjItMzYuNTctLjMyLTguNzQtLjA2LTE3LjQ3LS4xNC0yNi4yMS0uMjMtNS4xNi0uMDUtMTAuMzItLjEtMTUuNDgtLjEzLTQuOC0uMDMtOS41OS0uMDgtMTQuMzktLjE0LTEuNzUtLjAyLTMuNS0uMDMtNS4yNS0uMDQtMi40LS4wMS00Ljc5LS4wNC03LjE4LS4wN2gtMi4wOGMtNC45My0uMS04LjMxLTEuMzEtMTIuNjYtMy40NC0xMi4zNi0yMC42LTMtNDcuOTgtMy03MiA0LTUgNC01IDYtNiAxLjg0LS4xIDMuNjktLjE0IDUuNTQtLjE1LjU5LS4wMS41OS0uMDEgMy41OC0uMDMgMS4zMSAwIDIuNjEtLjAxIDMuOTYtLjAxIDEuMzktLjAxIDIuNzgtLjAyIDQuMTctLjAyIDMuMDItLjAyIDYuMDQtLjA0IDkuMDYtLjA1IDQuODUtLjAyIDkuNzEtLjA1IDE0LjU2LS4wOCA2Ljk2LS4wNCAxMy45Mi0uMDcgMjAuODctLjExIDE2LjM0LS4wOCAzMi42Ny0uMTcgNDkuMDEtLjI2IDMuNjQtLjAzIDcuMjgtLjA1IDEwLjkyLS4wNyAzMC41NS0uMTcgNjEuMS0uNDMgOTEuNjUtLjc1IDg5Ljg5LS45NCA4OS44OS0uOTQgMTIxLjQ5LS4wOS42My4wMS42My4wMSAzLjc4LjA5IDYuNC4yMiAxMi4yMi45MSAxOC40MSAyLjUzIDMuMTkgNC45OSA0LjEyIDguNDkgNC4xMyAxNC4zOC4wMSAxLjEuMDEgMi4yLjAxIDMuMzN2My42NWMwIC42NCAwIC42NC4wMSAzLjg4LjAxIDMuNTYuMDEgNy4xMi4wMSAxMC42OCAwIDMuODQuMDEgNy42OC4wMiAxMS41Mi4wMSA4LjM5LjAyIDE2Ljc4LjAyIDI1LjE3IDAgNS4yNC4wMSAxMC40OC4wMSAxNS43MmwuMDMgNDMuNTF2MTQuMTJjMCAxNS4xNi4wMiAzMC4zMi4wNSA0NS40OHEuMDMgMjMuMzQuMDMgNDYuNjggMCAxMy4xMS4wMyAyNi4yMmMuMDEgNy40NC4wMiAxNC44Ny4wMSAyMi4zMSAwIDMuOCAwIDcuNi4wMSAxMS4zOS4wMiA0LjEyLjAxIDguMjMgMCAxMi4zNC4wMSAxLjIxLjAxIDIuNDEuMDIgMy42NS0uMDYgMTAuMy0uMDYgMTAuMy0zLjM5IDE0Ljk3LTQuNTggMy4wNi04LjY2IDMuMTItMTQuMDggMy4xMmgtMy43NGMtMS4zOC0uMDEtMi43NS0uMDEtNC4xMy0uMDEtMS40Ny0uMDEtMi45NC0uMDEtNC40MS0uMDEtNC4wOSAwLTguMTctLjAxLTEyLjI2LS4wMi00LjQ4LS4wMS04Ljk2LS4wMS0xMy40NC0uMDItOS4wNS0uMDEtMTguMS0uMDItMjcuMTUtLjA0LTcuNzQtLjAyLTE1LjQ3LS4wMy0yMy4yLS4wNGEzMDIyOTMgMzAyMjkzIDAgMCAxLTEyNC45MS0uMjNjLS43MSAwLTEuNDIgMC0yLjE1LS4wMS0zLjYzIDAtNy4yNS0uMDEtMTAuODctLjAybC03Ni4wOC0uMTVjLTI0LjU3LS4wNS00OS4xNS0uMDktNzMuNzItLjE0LS43NiAwLTEuNTItLjAxLTIuMzEtLjAxLTcuNjctLjAxLTE1LjM0LS4wMy0yMy0uMDRsLTQ2LjgzLS4wOWMtLjcxLS4wMS0xLjQzLS4wMS0yLjE3LS4wMUMyODYgMTI3MiAyODYgMTI3MiAyODEgMTI2OWMtNC40OC03Ljc5LTQuMTUtMTUuODYtNC4xLTI0LjU5di0zLjE1YzAtMy40Ny4wMi02Ljk1LjAzLTEwLjQyIDAtMi41LjAxLTUgLjAxLTcuNDkuMDEtNS4zNS4wMi0xMC43LjA0LTE2LjA1LjAyLTcuNTIuMDMtMTUuMDQuMDUtMjIuNTcuMDUtMzQuOTUuMTUtNjkuOTEuMjYtMTA0Ljg2bC4wMy0xMC4yMXYtMi41NmMuMDQtMTMuODMuMDgtMjcuNjYuMTEtNDEuNDkuMDMtMTQuMzEuMDctMjguNjMuMTEtNDIuOTUuMDMtOC43Ny4wNS0xNy41NS4wNy0yNi4zMi4wMS01Ljk4LjAzLTExLjk2LjA1LTE3Ljk1LjAxLTMuNDQuMDItNi44OC4wMi0xMC4zMi4wMS0zLjc0LjAyLTcuNDcuMDQtMTEuMnYtMy4yN2MuMDYtOC43NC41NS0xNi42MyA2LjI4LTIzLjYgNS4zMS01LjE5IDExLjUtOS4wOCAxNy42OC0xMy4xNCA1LjU2LTMuNjYgMTEuMDUtNy40NSAxNi41My0xMS4yMiA0LjU5LTMuMTQgOS4xOS02LjI1IDEzLjgyLTkuMzIgMi4yMi0xLjQ5IDQuNDItMy4wMiA2LjU5LTQuNTcgNC4xLTIuODkgOC4yNi01LjY3IDEyLjQ0LTguNDQgNi4zNi00LjIgMTIuNTktOC41NiAxOC44LTEyLjk4IDQuOTgtMy41MyAxMC4wMi02Ljk3IDE1LjE0LTEwLjMyIDIuNDEtMS42MSA0Ljc3LTMuMjYgNy4xNC00Ljk0IDkuMTMtNi40IDE4LjQ4LTEyLjUgMjcuNzctMTguNjcgMTEuNzUtNy44MSAyMy40My0xNS43IDM0Ljk3LTIzLjg0IDQuNzUtMy4zMyA5LjU3LTYuNTUgMTQuNDItOS43NSAzLjU1LTIuMzUgNy4wNi00Ljc1IDEwLjU0LTcuMiA1LTMuNTIgMTAuMDctNi45MiAxNS4xNi0xMC4zLjkxLS42IDEuODItMS4yMSAyLjc1LTEuODMgMy41NS0yLjM2IDcuMTEtNC43MiAxMC42Ni03LjA4IDE1LjI2LTEwLjEzIDMwLjQ4LTIwLjM0IDQ1LjMyLTMxLjA4IDMuMjItMi4zMiA2LjUzLTQuNTEgOS44NC02LjcgNC4zMy0yLjg4IDguNjMtNS44MiAxMi45My04Ljc0Ljk2LS42NiAxLjkyLTEuMzEgMi45LTEuOTggNi42Ni00LjU1IDEzLjI2LTkuMTcgMTkuODMtMTMuODMgNC43Ny0zLjM5IDkuNi02LjY2IDE0LjQ4LTkuODggNC4yNy0yLjg0IDguNS01LjczIDEyLjczLTguNjMuODItLjU2IDEuNjUtMS4xMyAyLjUtMS43MSAzLjUzLTIuNDIgNy4wNi00Ljg0IDEwLjU3LTcuMyA2LjU5LTQuNjEgMTMuMjgtOS4wNCAyMC4wNC0xMy4zOSA2LjYzLTQuMjYgMTMuMTktOC42MiAxOS43NC0xMy4wMSAyLjYzLTEuNzYgNS4yNi0zLjUyIDcuOS01LjI3Ljk3LS42NSAxLjkzLTEuMyAyLjkzLTEuOTZsNS43My0zLjgxYzUuNjktMy43NyAxMS4zNC03LjYxIDE2Ljk2LTExLjQ5IDguNy01Ljk5IDE3LjQ4LTExLjg2IDI2LjMtMTcuNjcgNS4zMS0zLjUxIDEwLjU0LTcuMSAxNS43LTEwLjgzIDYuNy00LjgyIDEzLjU0LTkuNDEgMjAuNDItMTMuOTUgMi42OC0xLjc3IDUuMzUtMy41NyA4LjAyLTUuMzYgMy42NC0yLjQyIDcuMy00LjggMTEtNy4xMiA1LjE0LTMuMjUgMTAuMTQtNi42OCAxNS4xMy0xMC4xNCA1Ljc1LTMuOTcgMTEuNTUtNy44NyAxNy4zNy0xMS43NC45LS42IDEuOC0xLjIgMi43My0xLjgxIDMuNzEtMi40NyA3LjQyLTQuOTQgMTEuMTQtNy4zOSA1LjY0LTMuNzMgMTEuMTQtNy42IDE2LjYtMTEuNjEgNy42Mi01LjQ5IDE1LjU2LTEwLjU0IDIzLjUtMTUuNTVDODg2LjE1IDQ4MSA4ODYuMTUgNDgxIDg5MiA0ODEiLz48cGF0aCBmaWxsPSIjMjg3NEIzIiBkPSJNNTMgNDc5YzkuNjEuNzQgMTcuNDQgNy41OCAyNSAxMyAyLjAyIDEuNDIgNC4wNCAyLjg1IDYuMDUgNC4yNyA1LjUzIDMuODggMTEuMDQgNy43OSAxNi41MiAxMS43MyA1Ljg0IDQuMiAxMS43NiA4LjI0IDE3Ljc2IDEyLjIgMi45NiAxLjk5IDUuOCA0LjA5IDguNjMgNi4yNSAxMi4xNyA5LjI2IDI0Ljg2IDE3Ljc5IDM3LjU5IDI2LjI1IDQuNjYgMy4wOSA5LjI3IDYuMjMgMTMuODQgOS40NiA4LjkxIDYuMjggMTcuODkgMTIuNDQgMjcuMTIgMTguMjUgMy4yOSAyLjEgNi40NiA0LjMzIDkuNjUgNi41OSAzLjQ5IDIuNDYgNy4wMSA0Ljg5IDEwLjUzIDcuMzFsMi4wNyAxLjQzYzQuNjMgMy4xOCA5LjMgNi4yOSAxMy45OSA5LjM4IDUuNjIgMy43MSAxMSA3LjY1IDE2LjM2IDExLjczIDMuODUgMi44NiA3LjgzIDUuNSAxMS44NCA4LjEzIDQuMjMgMi44IDguNCA1LjcgMTIuNTcgOC42IDMuODEgMi42NiA3LjY1IDUuMjkgMTEuNDggNy45MiAyLjAyIDEuMzkgNC4wNSAyLjc4IDYuMDcgNC4xNyAxLjI0Ljg2IDIuNDkgMS43MSAzLjczIDIuNTcgNS41OCAzLjgzIDExLjEzIDcuNjggMTYuNTggMTEuNyA0Ljk1IDMuNjMgMTAuMDMgNy4wNCAxNS4xNSAxMC40MyA0LjIzIDIuOCA4LjQxIDUuNjYgMTIuNTYgOC41OSAxMS4xOSA3Ljg0IDIyLjUyIDE1LjQ5IDMzLjkxIDIzLjA0IDIuODYgMS45MSA1LjcyIDMuODIgOC41OSA1LjczIDIuNjIgMS43NSA1LjI1IDMuNDkgNy44OSA1LjIzLjc4LjUyIDEuNTcgMS4wNSAyLjM4IDEuNTggMS41NSAxLjAzIDMuMSAyLjA1IDQuNjUgMy4wNyA2LjYxIDQuMzkgMTMuMDYgOC45NyAxOC45OSAxNC4yNy42Ny41OSAxLjM0IDEuMTkgMi4wMyAxLjhDNDI4IDczNSA0MjggNzM1IDQyOSA3NDFjLTMuNzIgNC44NC03LjcgOC4zMS0xMi42MiAxMS44OC0uNzEuNTItMS40MiAxLjA0LTIuMTUgMS41OC0yLjA3IDEuNTItNC4xNSAzLjAzLTYuMjMgNC41NC0xLjAyLjc1LTIuMDUgMS41LTMuMTEgMi4yN3EtMy45MyAyLjg4LTcuODkgNS43M2MtMS45IDEuMzctMy43OSAyLjc1LTUuNjkgNC4xMmwtMi43NiAyYy0xLjU3IDEuMTYtMy4xNCAyLjM1LTQuNjcgMy41OC01Ljk1IDQuNzUtMTIgOC4xNy0xOS43NiA4LjQyLTkuNjQtMS45NS0xOC4yNC04LjMyLTI2LjE5LTEzLjgtNC4xNC0yLjgzLTguMzItNS42LTEyLjQ5LTguMzgtLjkyLS42Mi0xLjg1LTEuMjMtMi44LTEuODctNS4yOC0zLjUyLTEwLjYtNi45OS0xNS45OC0xMC4zNy01LjM0LTMuNDEtMTAuNTktNi45Ni0xNS44NS0xMC40OS0yLjY2LTEuNzgtNS4zMy0zLjU2LTgtNS4zMy04NC42OC01Ni40Ni04NC42OC01Ni40Ni04Ni41OS01Ny43NC0xLjI3LS44NC0yLjU0LTEuNjgtMy44LTIuNTMtMi44NS0xLjktNS43LTMuNzktOC41NC01LjctMTIuODQtOC42LTI1Ljg5LTE2LjgxLTM5LjExLTI0LjgyLTEuNjEtLjk5LTMuMTktMi4wNC00Ljc3LTMuMDloLThjLS43OCAyLjc3LTEuMTIgNS4yMS0xLjExIDguMDggMCAuODEuMDEgMS42Mi4wMSAyLjQ2IDAgLjg4LjAxIDEuNzcuMDIgMi42OCAwIC45NSAwIDEuOS4wMSAyLjg4LjAxIDMuMjEuMDMgNi40MS4wNSA5LjYybC4wMyA2Ljk1Yy4wMiA1LjcyLjA1IDExLjQ0LjA4IDE3LjE2LjA0IDYuODguMDcgMTMuNzYuMDkgMjAuNjMuMDIgMy42MS4wMyA3LjIxLjA1IDEwLjgyIDAgLjM2IDAgLjM2LjAxIDIuMmwuMDkgMjAuNTRjLjE1IDMzLjE1LjI4IDY2LjMxLjQgOTkuNDYgMCAxLjcuMDEgMy40MS4wMSA1LjExLjI5IDgwLjI5LjQxIDE2MC41OC40NCAyNDAuODcgMCAxMy40NC4wMSAyNi44Ny4wMyA0MC4zLjAxIDE1LjMzLjAyIDMwLjY2LjAyIDQ1Ljk5IDAgNy44NSAwIDE1LjcxLjAxIDIzLjU2LjAxIDYuNTQuMDEgMTMuMDcuMDEgMTkuNi0uMDEgMy4zLS4wMSA2LjU5IDAgOS44OC4wMSAzLjU2IDAgNy4xMSAwIDEwLjY3IDAgMS4wMi4wMSAyLjAzLjAxIDMuMDgtLjA0IDkuMTQtLjMzIDE4LjE0LTYuMjYgMjUuNDYtNi40MyAzLjQ5LTEyLjIyIDMuNDItMTkuNDMgMy4zNmgtMy42MmMtMi41MSAwLTUuMDItLjAxLTcuNTQtLjAyLTMuODMtLjAzLTcuNjYtLjAyLTExLjUtLjAyLTIuNDUgMC00LjktLjAxLTcuMzQtLjAyaC0zLjQ2Yy05LjQyLS4wOC0xNS4xOC0uMzctMjIuMTEtNy4zLTIuMTYtNy4wMS0yLjI4LTEzLjUzLTIuMjUtMjAuODMgMC0xLjI5IDAtMi41OC0uMDEtMy45MSAwLTMuNTggMC03LjE2LjAxLTEwLjc1LjAxLTMuODkgMC03Ljc5IDAtMTEuNjhxLS4wMTUtMTAuMjQ1IDAtMjAuNDljLjAxLTEwLjE2LjAxLTIwLjMxIDAtMzAuNDcgMC0xNy4wOCAwLTM0LjE3LjAxLTUxLjI1LjAxLTE2LjkzLjAxLTMzLjg2LjAxLTUwLjc4di0xNi4wMWMwLTQwLjEuMDEtODAuMTkuMDMtMTIwLjI5LjAxLTM1LjYyLjAyLTcxLjI0LjAxLTEwNi44NnYtMzAuNzZjMC0yOS43Ni4wMS01OS41My4wMS04OS4yOSAwLTEuMDYuMDEtMi4xMi4wMS0zLjIxdi01Ny4yYzAtMTkuMDkuMDEtMzguMTguMDItNTcuMjh2LTMwLjI4YzAtNi43NS4wMS0xMy40OS4wMS0yMC4yNCAwLTMuODQuMDEtNy42OCAwLTExLjUyIDAtNC4xNS4wMS04LjI5LjAxLTEyLjQ0di0zLjU5Yy4wNS0yMS40My4wNS0yMS40MyA0LjEzLTI2Ljg3Ii8+PHBhdGggZmlsbD0iIzI4NzRiMyIgZD0iTTYxNSAxNDRjMTcuMzIgMCAzNy45NyAyMS40MSA1MCAzM2wxLjk0IDEuNzljNS43NiA1LjQzIDEwLjM2IDExLjg3IDE1LjA2IDE4LjIxLjYzLjg0IDEuMjYgMS42NyAxLjkxIDIuNTQgMTcuNDIgMjMuODEgMjUuNTQgNTMuODUgMjUuNCA4My4xNSAwIC42MSAwIC42MS0uMDEgMy43MS0uMTMgOS44NC0xLjE2IDE5LjAyLTMuMyAyOC42LS4zNCAxLjY3LS42OSAzLjM1LTEuMDMgNS4wMi04LjQ2IDM5LjYxLTMwLjE2IDczLjE3LTUyLjg4IDEwNS45OS00LjggNi45Ni05LjM2IDE0LjA2LTEzLjkyIDIxLjE4LTEuMDggMS42Ny0yLjIgMy4zMy0zLjMyIDQuOTgtMS43MSAyLjYyLTMuMTIgNS4yLTQuNDcgOC4wMi0yLjI0IDQuNTYtNC41NiA5LjA1LTYuOTYgMTMuNTItMTEuMzQgMjEuMi0xOS41MiA0Mi44Mi0yNS43OSA2Ni0uNTIgMS44Ny0xLjA2IDMuNzQtMS42IDUuNi00LjE4IDE1LjQ4LTQuMjQgMzIuNDMtMy45NyA0OC4zOC0uMjEgMTEuNDYtLjIxIDExLjQ2LTMuMDYgMTQuMzEtMTQuNiAwLTI3LjMyLTEyLjg3LTM4LTIyLS45My0uNzctMS44NS0xLjU0LTIuODEtMi4zNC0xMS41Mi05LjktMjAuNC0yMS43MS0yOC4xOS0zNC42Ni0uNjMtMS0xLjI1LTEuOTktMS45LTMuMDItNC4xLTYuNjktNy4wOC0xMy41MS05Ljg0LTIwLjgzQzUwNyA1MjIgNTA3IDUyMiA1MDUgNTE5Yy0xNC4wNC00Mi4yLTkuNDktODcuMTEgOS43Ny0xMjYuNzQgMi40MS00LjgxIDQuOTYtOS41MSA3Ljg0LTE0LjA2IDEuMTQtMS44IDIuMjEtMy42NSAzLjI2LTUuNTEgMi4xNC0zLjc3IDQuNTEtNy4zNSA2Ljk0LTEwLjk0IDMuNTUtNS4yOCA3LjA1LTEwLjU5IDEwLjQ0LTE1Ljk4IDEuNjUtMi42MSAzLjMxLTUuMjEgNC45OC03LjgxIDMuOS02LjEzIDcuNjYtMTIuMzUgMTEuMzktMTguNTguNjUtMS4wNyAxLjI5LTIuMTQgMS45NS0zLjI0IDMuMTktNS4zMiA2LjMtMTAuNjYgOS4yOC0xNi4xIDEuMTEtMS45NyAyLjI4LTMuODkgMy40OC01LjgxQzU4Ny44NiAyNzIuMzkgNTk4LjQgMjQ3LjUxIDYwNiAyMjNsMS4zOC00LjJjNy42Ni0yMy45NSA5LjI3LTQ3LjgyIDYuNjItNzIuOHoiLz48cGF0aCBmaWxsPSIjMTQ5MjQ5IiBkPSJNNDgzIDMyYzEzLjY1LTEuNDUgMjcuNzQgMTMuMiAzOCAyMXYyYy41NC4yMiAxLjA5LjQ0IDEuNjQuNjYgMy4xNiAxLjc5IDUuNTMgNC4yMSA4LjA1IDYuNzguMjYuMjcuMjYuMjcgMS42MSAxLjYzIDQuOTEgNS4wNSA5LjQ0IDEwLjMxIDEzLjcgMTUuOTMuNDYuNi45MiAxLjIxIDEuMzkgMS44MyAxOS40MiAyNS44MyAyOS45IDUzLjU1IDMwLjU2IDg1Ljk3LjA1IDIuMDUuMTMgNC4wOS4yMSA2LjE0LjczIDI5LjgyLTcuMzEgNTguODMtMjEuMTYgODUuMDYtLjYgMS4yMi0xLjIgMi40NS0xLjggMy42OC0zLjQ4IDcuMTctNy4xNiAxNC4xOS0xMS4yIDIxLjA3LS4zOC42NS0uNzYgMS4zLTEuMTUgMS45Ni0zLjcyIDYuMjUtNy43OSAxMi4yNi0xMS44NSAxOC4yOS0xNi44OCAyNS4xNi0xNi44OCAyNS4xNi0yNCAzNy0xLjM3IDIuMjEtMi43NSA0LjQyLTQuMTIgNi42MkM0ODUuMzkgMzc2LjEgNDcxLjU5IDQwNy4xNyA0NjUgNDQwcS0uMjQgMS4xNy0uNDggMi4zN2MtMy41NyAxOC4yOC0zLjI1IDM3LjA3LTMuNTIgNTUuNjNsLTMgM2MtNi40LTEuOC0xMS40OS00LjI0LTE2Ljg4LTguMTItLjY5LS40OS0xLjM4LS45OC0yLjA5LTEuNDktMjMuMTgtMTYuNTUtNDAuNzctMzYuNTgtNTMuMDMtNjIuMzktLjQ4LS45OC0uOTYtMS45Ny0xLjQ2LTIuOTgtNi45OS0xNC41OC0xMi4xLTI5LjA0LTE0LjU0LTQ1LjAyLS4wOC0uMzYtLjA4LS4zNi0uNTEtMi4xOS0uNjQtMy42Ny0uNzEtNy4zMS0uNzYtMTEuMDItLjAyLS44LS4wMy0xLjU5LS4wNC0yLjQyLS4yMi0xNy43LjA1LTM0LjI5IDUuMzEtNTEuMzcuMzYtMS4yMi43MS0yLjQ0IDEuMDgtMy43Ljg5LTIuODEgMS44Ni01LjU1IDIuOTItOC4zLjE0LS4zOS4xNC0uMzkuODYtMi4zNyA2LjA1LTE2LjEgMTQuOTktMzEuMzMgMjQuMy00NS43MyAyLjE0LTMuMzcgNC4xOC02Ljc4IDYuMjItMTAuMjEgMi44OC00Ljg2IDUuODUtOS42NCA4LjkzLTE0LjM4IDMuODEtNS44NiA3LjQ2LTExLjgyIDExLjA3LTE3LjgxLjI1LS40Mi4yNS0uNDIgMS41NS0yLjU3IDIuNTMtNC4yNCA0LjkyLTguNDggNy4wNy0xMi45MyAyLjk5LTUuNjUgNi4xMS0xMS4yIDkuMzgtMTYuNjkgMy44Ni02LjU4IDcuMjctMTMuMzUgMTAuNi0yMC4yMiAxLjAxLTIuMDcgMi4wMy00LjEzIDMuMDYtNi4xOSA1LjI0LTEwLjY3IDkuMjUtMjEuNjEgMTIuOTYtMzIuOS40Ny0xLjM5Ljk0LTIuNzcgMS40MS00LjE2IDEuMDgtMy4yNiAyLjA4LTYuNTUgMy4wMi05Ljg2LjM4LTEuMy43Ni0yLjYxIDEuMTctMy45IDYuNDctMjEuMjIgNC40OC00Ni4yMSAyLjQtNjguMDh6Ii8+PC9zdmc+Cg==" alt="شعار"></div>
+      <span>الحديثة للغاز الطبيعي</span>
+    </div>
+    <button class="menu-btn" onclick="openSidebar()" aria-label="فتح القائمة">☰</button>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ============ SIDEBAR ============ -->
+  <nav class="sidebar" id="sidebarNav">
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="إغلاق القائمة">✕</button>
+    <div class="brand">
+      <div class="brand-mark" id="logoSlot"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NjAiIGhlaWdodD0iMTMwMCI+PHBhdGggZmlsbD0iIzE0OTI0OSIgZD0iTTg5MiA0ODFjMy45NyA0LjY2IDQuMTIgOS4wNCA0LjEzIDE1LjAxLjAxIDEuMjEuMDEgMi40Mi4wMiAzLjY3djQuMDNjMCAxLjQzIDAgMi44NS4wMSA0LjI4LjAxIDMuOTMuMDEgNy44NS4wMSAxMS43OGwuMDMgMTIuN2MuMDIgMTAuMjMuMDMgMjAuNDUuMDQgMzAuNjcgMCA0LjgyLjAxIDkuNjQuMDEgMTQuNDUuMDIgMTYuMDEuMDMgMzIuMDIuMDQgNDguMDMgMCA0LjE2IDAgOC4zMS4wMSAxMi40NnYzLjEzYzAgMTYuNzMuMDMgMzMuNDUuMDYgNTAuMTguMDQgMTcuMTcuMDUgMzQuMzQuMDYgNTEuNTJxMCAxNC40Ni4wMyAyOC45MmMuMDMgOC4yMS4wMyAxNi40Mi4wMiAyNC42MyAwIDQuMTkgMCA4LjM4LjAyIDEyLjU3LjAyIDMuODMuMDIgNy42NyAwIDExLjUxIDAgMi4wNC4wMSA0LjA3LjAzIDYuMTEtLjA1IDcuNjEtMS4wNSAxMy41NC00LjUyIDIwLjM1LTYuODkgMi41Ny0xMy43MiAyLjMxLTIxIDIuMy0xLjM2IDAtMi43My4wMS00LjA5LjAxLTIuODUuMDEtNS43LjAxLTguNTQuMDEtMy42NC0uMDEtNy4yNy4wMS0xMC45MS4wMy0yLjgxLjAxLTUuNjIuMDItOC40My4wMS0xLjk5IDAtMy45OC4wMi01Ljk2LjAzLTYuNDQtLjAzLTExLjQtLjItMTcuMDctMy4zOS0yLjg3LTQuODMtMy40My04Ljg1LTMuNC0xNC4zNS0uMDEtLjgzLS4wMS0xLjY1LS4wMi0yLjUxLS4wMi0yLjc1LS4wMS01LjUxLS4wMS04LjI3bC0uMDMtNS45NWMtLjAzLTUuMzctLjA0LTEwLjc0LS4wNS0xNi4xMi0uMDEtNS42MS0uMDMtMTEuMjMtLjA2LTE2Ljg1LS4wNC0xMC42My0uMDctMjEuMjctLjA5LTMxLjlxLS4wNDUtMTguMTY1LS4xMi0zNi4zM2MtLjA5LTI0LjkxLS4xNi00OS44MS0uMjItNzQuNzJsLTItM2MtNC41Ni41Ny03Ljk3IDIuNS0xMS44MSA0Ljg4LS42NS4zOS0xLjMuNzktMS45NyAxLjItNS41NyAzLjQzLTEwLjk2IDcuMTEtMTYuMzMgMTAuODQtNC4wNSAyLjgzLTguMTUgNS41Ni0xMi4zMyA4LjItNi42NiA0LjIzLTEzLjE3IDguNjgtMTkuNjggMTMuMTMtMTIuODIgOC43NS0yNS43OCAxNy4yNi0zOC44OCAyNS41Ni03Ljg5IDUuMDEtMTUuNjQgMTAuMjMtMjMuMzEgMTUuNTctMTEuMjQgNy44LTIyLjY3IDE1LjI4LTM0LjE2IDIyLjY5LTUuNzcgMy43My0xMS41MiA3LjQ3LTE3LjI4IDExLjIyLTQuMzYgMi44NC04LjczIDUuNjYtMTMuMTIgOC40Ni01LjE1IDMuMjktMTAuMjIgNi42Ni0xNS4yMSAxMC4yYTk1OSA5NTkgMCAwIDEtMTEuODYgOC4xN2MtLjgxLjU2LTEuNjMgMS4xMi0yLjQ3IDEuNjktMS42OCAxLjE1LTMuMzcgMi4zLTUuMDUgMy40Ni0yLjQ5IDEuNy00Ljk4IDMuNC03LjQ3IDUuMTEtNy45NiA1LjQ2LTE1Ljk1IDEwLjg5LTI0IDE2LjIzLTQuMTggMi43OC04LjMxIDUuNjQtMTIuNDEgOC41NC00IDIuNzgtOC4wNiA1LjQ1LTEyLjEzIDguMTItMy45MyAyLjYtNy43IDUuMzQtMTEuNDUgOC4xOC0zLjYyIDIuNjktNy4zNSA1LjIxLTExLjA4IDcuNzQtMS42OCAxLjE0LTMuMzYgMi4yOS01LjA1IDMuNDMtLjQxLjI5LS40MS4yOS0yLjUyIDEuNzItMy41NyAyLjQ0LTcuMTIgNC44OS0xMC42OCA3LjM1LTUuMTUgMy41NS0xMC4zNCA3LjA0LTE1LjU2IDEwLjUtNS4yOCAzLjQ5LTEwLjQyIDcuMTMtMTUuNTIgMTAuODgtNS43NCA0LjE0LTExLjY5IDcuOTctMTcuNiAxMS44Ni02LjEyIDQuMDQtMTIuMTIgOC4yMi0xOC4wNyAxMi40OS00LjYgMy4zMS05LjI3IDYuNDctMTQgOS41OC0yLjk3IDEuOTgtNS45MyAzLjk1LTguODkgNS45My0yLjA0IDEuMzYtNC4wOCAyLjctNi4xMiA0LjA0LTYuMTggNC4wNi0xMi4xNSA4LjMyLTE4LjAzIDEyLjgtMy43OSAyLjg2LTcuNjggNS41OS0xMS41OCA4LjMxLTUuNzQgNC42NC03LjI1IDguODctOC4zOCAxNS45Mi0uMjUgMy4xOC0uMjcgNi4zNC0uMjUgOS41M3YyLjc3Yy0uMDEgMy4wNSAwIDYuMDkuMDEgOS4xNCAwIDIuMi0uMDEgNC4zOS0uMDEgNi41OCAwIDUuOTQgMCAxMS44OS4wMSAxNy44My4wMSA2LjIyLjAxIDEyLjQ1LjAxIDE4LjY4IDAgMTAuNDUuMDEgMjAuOS4wMiAzMS4zNi4wMiAxMC43NC4wMyAyMS40OC4wMiAzMi4yMnY0LjAxYzAgMTIuODcuMDEgMjUuNzQuMDIgMzguNjF2MTEuMTFjMCA1LjgyLjAxIDExLjY1LjAyIDE3LjQ3djYuNDFjMCAyLjkyLjAxIDUuODMuMDIgOC43NSAwIC40MiAwIC40Mi0uMDEgMi41NS4wNiAxNC45LjA2IDE0LjkgNi4xNCAyMC45OCAzLjc0IDEuMTkgNy40MiAxLjE0IDExLjMgMS4xM2gyLjI0YzIuNS4wMSA1IC4wMSA3LjQ5IDAgMS44LjAxIDMuNi4wMSA1LjQxLjAxIDQuOTYuMDEgOS45Mi4wMSAxNC44OC4wMSA1LjM1IDAgMTAuNyAwIDE2LjA0LjAxIDEwLjQ4IDAgMjAuOTYuMDEgMzEuNDQuMDFoMjUuNTVjMjQuMTMuMDEgNDguMjYuMDIgNzIuMzguMDJoNy45YzIxLjEyLS4wMSA0Mi4yNSAwIDYzLjM3LjAyIDIxLjY4LjAxIDQzLjM1LjAyIDY1LjAzLjAyIDEyLjE4IDAgMjQuMzUgMCAzNi41My4wMSAxMC4zNi4wMSAyMC43My4wMSAzMS4wOS4wMSA1LjI5LS4wMSAxMC41OC0uMDEgMTUuODggMHE3LjI2LjAxNSAxNC41MiAwYzEuNzUgMCAzLjUxIDAgNS4yNi4wMSAyLjM4IDAgNC43NiAwIDcuMTQtLjAxLjM0IDAgLjM0IDAgMi4wNy4wMSA0LjE5LS4wMyA3LjU4LS43NCAxMS40OC0yLjI2IDIuNDgtNC4zNSAzLjM3LTcuNDYgMy4zNi0xMi40NSAwLTEuMjguMDEtMi41Ni4wMS0zLjg4bC0uMDMtNC4yMXYtNC40N2MwLTQuMDMtLjAxLTguMDYtLjA0LTEyLjA5LS4wMS00LjIyLS4wMi04LjQzLS4wMi0xMi42NS0uMDEtNy45OC0uMDMtMTUuOTYtLjA2LTIzLjkzLS4wNC05LjA5LS4wNS0xOC4xOC0uMDctMjcuMjYtLjA5LTU1Ljk2LS4wOS01NS45Ni0zLjE1LTYxLjA2LTYuNDMtMi4zMy0xMi40NC0yLjI0LTE5LjIzLTIuMTdsLTUuNzUuMDNjLTIuMDkuMDEtNC4xNy4wMi02LjI2LjA0LTYuOTMuMDUtMTMuODcuMDYtMjAuOC4wNy0xLjY5LjAxLTMuMzcuMDEtNS4wNS4wMi0zMy4zNy4wNy02Ni43My0uMy0xMDAuMDktLjYyLTEyLjE5LS4xMS0yNC4zOC0uMjItMzYuNTctLjMyLTguNzQtLjA2LTE3LjQ3LS4xNC0yNi4yMS0uMjMtNS4xNi0uMDUtMTAuMzItLjEtMTUuNDgtLjEzLTQuOC0uMDMtOS41OS0uMDgtMTQuMzktLjE0LTEuNzUtLjAyLTMuNS0uMDMtNS4yNS0uMDQtMi40LS4wMS00Ljc5LS4wNC03LjE4LS4wN2gtMi4wOGMtNC45My0uMS04LjMxLTEuMzEtMTIuNjYtMy40NC0xMi4zNi0yMC42LTMtNDcuOTgtMy03MiA0LTUgNC01IDYtNiAxLjg0LS4xIDMuNjktLjE0IDUuNTQtLjE1LjU5LS4wMS41OS0uMDEgMy41OC0uMDMgMS4zMSAwIDIuNjEtLjAxIDMuOTYtLjAxIDEuMzktLjAxIDIuNzgtLjAyIDQuMTctLjAyIDMuMDItLjAyIDYuMDQtLjA0IDkuMDYtLjA1IDQuODUtLjAyIDkuNzEtLjA1IDE0LjU2LS4wOCA2Ljk2LS4wNCAxMy45Mi0uMDcgMjAuODctLjExIDE2LjM0LS4wOCAzMi42Ny0uMTcgNDkuMDEtLjI2IDMuNjQtLjAzIDcuMjgtLjA1IDEwLjkyLS4wNyAzMC41NS0uMTcgNjEuMS0uNDMgOTEuNjUtLjc1IDg5Ljg5LS45NCA4OS44OS0uOTQgMTIxLjQ5LS4wOS42My4wMS42My4wMSAzLjc4LjA5IDYuNC4yMiAxMi4yMi45MSAxOC40MSAyLjUzIDMuMTkgNC45OSA0LjEyIDguNDkgNC4xMyAxNC4zOC4wMSAxLjEuMDEgMi4yLjAxIDMuMzN2My42NWMwIC42NCAwIC42NC4wMSAzLjg4LjAxIDMuNTYuMDEgNy4xMi4wMSAxMC42OCAwIDMuODQuMDEgNy42OC4wMiAxMS41Mi4wMSA4LjM5LjAyIDE2Ljc4LjAyIDI1LjE3IDAgNS4yNC4wMSAxMC40OC4wMSAxNS43MmwuMDMgNDMuNTF2MTQuMTJjMCAxNS4xNi4wMiAzMC4zMi4wNSA0NS40OHEuMDMgMjMuMzQuMDMgNDYuNjggMCAxMy4xMS4wMyAyNi4yMmMuMDEgNy40NC4wMiAxNC44Ny4wMSAyMi4zMSAwIDMuOCAwIDcuNi4wMSAxMS4zOS4wMiA0LjEyLjAxIDguMjMgMCAxMi4zNC4wMSAxLjIxLjAxIDIuNDEuMDIgMy42NS0uMDYgMTAuMy0uMDYgMTAuMy0zLjM5IDE0Ljk3LTQuNTggMy4wNi04LjY2IDMuMTItMTQuMDggMy4xMmgtMy43NGMtMS4zOC0uMDEtMi43NS0uMDEtNC4xMy0uMDEtMS40Ny0uMDEtMi45NC0uMDEtNC40MS0uMDEtNC4wOSAwLTguMTctLjAxLTEyLjI2LS4wMi00LjQ4LS4wMS04Ljk2LS4wMS0xMy40NC0uMDItOS4wNS0uMDEtMTguMS0uMDItMjcuMTUtLjA0LTcuNzQtLjAyLTE1LjQ3LS4wMy0yMy4yLS4wNGEzMDIyOTMgMzAyMjkzIDAgMCAxLTEyNC45MS0uMjNjLS43MSAwLTEuNDIgMC0yLjE1LS4wMS0zLjYzIDAtNy4yNS0uMDEtMTAuODctLjAybC03Ni4wOC0uMTVjLTI0LjU3LS4wNS00OS4xNS0uMDktNzMuNzItLjE0LS43NiAwLTEuNTItLjAxLTIuMzEtLjAxLTcuNjctLjAxLTE1LjM0LS4wMy0yMy0uMDRsLTQ2LjgzLS4wOWMtLjcxLS4wMS0xLjQzLS4wMS0yLjE3LS4wMUMyODYgMTI3MiAyODYgMTI3MiAyODEgMTI2OWMtNC40OC03Ljc5LTQuMTUtMTUuODYtNC4xLTI0LjU5di0zLjE1YzAtMy40Ny4wMi02Ljk1LjAzLTEwLjQyIDAtMi41LjAxLTUgLjAxLTcuNDkuMDEtNS4zNS4wMi0xMC43LjA0LTE2LjA1LjAyLTcuNTIuMDMtMTUuMDQuMDUtMjIuNTcuMDUtMzQuOTUuMTUtNjkuOTEuMjYtMTA0Ljg2bC4wMy0xMC4yMXYtMi41NmMuMDQtMTMuODMuMDgtMjcuNjYuMTEtNDEuNDkuMDMtMTQuMzEuMDctMjguNjMuMTEtNDIuOTUuMDMtOC43Ny4wNS0xNy41NS4wNy0yNi4zMi4wMS01Ljk4LjAzLTExLjk2LjA1LTE3Ljk1LjAxLTMuNDQuMDItNi44OC4wMi0xMC4zMi4wMS0zLjc0LjAyLTcuNDcuMDQtMTEuMnYtMy4yN2MuMDYtOC43NC41NS0xNi42MyA2LjI4LTIzLjYgNS4zMS01LjE5IDExLjUtOS4wOCAxNy42OC0xMy4xNCA1LjU2LTMuNjYgMTEuMDUtNy40NSAxNi41My0xMS4yMiA0LjU5LTMuMTQgOS4xOS02LjI1IDEzLjgyLTkuMzIgMi4yMi0xLjQ5IDQuNDItMy4wMiA2LjU5LTQuNTcgNC4xLTIuODkgOC4yNi01LjY3IDEyLjQ0LTguNDQgNi4zNi00LjIgMTIuNTktOC41NiAxOC44LTEyLjk4IDQuOTgtMy41MyAxMC4wMi02Ljk3IDE1LjE0LTEwLjMyIDIuNDEtMS42MSA0Ljc3LTMuMjYgNy4xNC00Ljk0IDkuMTMtNi40IDE4LjQ4LTEyLjUgMjcuNzctMTguNjcgMTEuNzUtNy44MSAyMy40My0xNS43IDM0Ljk3LTIzLjg0IDQuNzUtMy4zMyA5LjU3LTYuNTUgMTQuNDItOS43NSAzLjU1LTIuMzUgNy4wNi00Ljc1IDEwLjU0LTcuMiA1LTMuNTIgMTAuMDctNi45MiAxNS4xNi0xMC4zLjkxLS42IDEuODItMS4yMSAyLjc1LTEuODMgMy41NS0yLjM2IDcuMTEtNC43MiAxMC42Ni03LjA4IDE1LjI2LTEwLjEzIDMwLjQ4LTIwLjM0IDQ1LjMyLTMxLjA4IDMuMjItMi4zMiA2LjUzLTQuNTEgOS44NC02LjcgNC4zMy0yLjg4IDguNjMtNS44MiAxMi45My04Ljc0Ljk2LS42NiAxLjkyLTEuMzEgMi45LTEuOTggNi42Ni00LjU1IDEzLjI2LTkuMTcgMTkuODMtMTMuODMgNC43Ny0zLjM5IDkuNi02LjY2IDE0LjQ4LTkuODggNC4yNy0yLjg0IDguNS01LjczIDEyLjczLTguNjMuODItLjU2IDEuNjUtMS4xMyAyLjUtMS43MSAzLjUzLTIuNDIgNy4wNi00Ljg0IDEwLjU3LTcuMyA2LjU5LTQuNjEgMTMuMjgtOS4wNCAyMC4wNC0xMy4zOSA2LjYzLTQuMjYgMTMuMTktOC42MiAxOS43NC0xMy4wMSAyLjYzLTEuNzYgNS4yNi0zLjUyIDcuOS01LjI3Ljk3LS42NSAxLjkzLTEuMyAyLjkzLTEuOTZsNS43My0zLjgxYzUuNjktMy43NyAxMS4zNC03LjYxIDE2Ljk2LTExLjQ5IDguNy01Ljk5IDE3LjQ4LTExLjg2IDI2LjMtMTcuNjcgNS4zMS0zLjUxIDEwLjU0LTcuMSAxNS43LTEwLjgzIDYuNy00LjgyIDEzLjU0LTkuNDEgMjAuNDItMTMuOTUgMi42OC0xLjc3IDUuMzUtMy41NyA4LjAyLTUuMzYgMy42NC0yLjQyIDcuMy00LjggMTEtNy4xMiA1LjE0LTMuMjUgMTAuMTQtNi42OCAxNS4xMy0xMC4xNCA1Ljc1LTMuOTcgMTEuNTUtNy44NyAxNy4zNy0xMS43NC45LS42IDEuOC0xLjIgMi43My0xLjgxIDMuNzEtMi40NyA3LjQyLTQuOTQgMTEuMTQtNy4zOSA1LjY0LTMuNzMgMTEuMTQtNy42IDE2LjYtMTEuNjEgNy42Mi01LjQ5IDE1LjU2LTEwLjU0IDIzLjUtMTUuNTVDODg2LjE1IDQ4MSA4ODYuMTUgNDgxIDg5MiA0ODEiLz48cGF0aCBmaWxsPSIjMjg3NEIzIiBkPSJNNTMgNDc5YzkuNjEuNzQgMTcuNDQgNy41OCAyNSAxMyAyLjAyIDEuNDIgNC4wNCAyLjg1IDYuMDUgNC4yNyA1LjUzIDMuODggMTEuMDQgNy43OSAxNi41MiAxMS43MyA1Ljg0IDQuMiAxMS43NiA4LjI0IDE3Ljc2IDEyLjIgMi45NiAxLjk5IDUuOCA0LjA5IDguNjMgNi4yNSAxMi4xNyA5LjI2IDI0Ljg2IDE3Ljc5IDM3LjU5IDI2LjI1IDQuNjYgMy4wOSA5LjI3IDYuMjMgMTMuODQgOS40NiA4LjkxIDYuMjggMTcuODkgMTIuNDQgMjcuMTIgMTguMjUgMy4yOSAyLjEgNi40NiA0LjMzIDkuNjUgNi41OSAzLjQ5IDIuNDYgNy4wMSA0Ljg5IDEwLjUzIDcuMzFsMi4wNyAxLjQzYzQuNjMgMy4xOCA5LjMgNi4yOSAxMy45OSA5LjM4IDUuNjIgMy43MSAxMSA3LjY1IDE2LjM2IDExLjczIDMuODUgMi44NiA3LjgzIDUuNSAxMS44NCA4LjEzIDQuMjMgMi44IDguNCA1LjcgMTIuNTcgOC42IDMuODEgMi42NiA3LjY1IDUuMjkgMTEuNDggNy45MiAyLjAyIDEuMzkgNC4wNSAyLjc4IDYuMDcgNC4xNyAxLjI0Ljg2IDIuNDkgMS43MSAzLjczIDIuNTcgNS41OCAzLjgzIDExLjEzIDcuNjggMTYuNTggMTEuNyA0Ljk1IDMuNjMgMTAuMDMgNy4wNCAxNS4xNSAxMC40MyA0LjIzIDIuOCA4LjQxIDUuNjYgMTIuNTYgOC41OSAxMS4xOSA3Ljg0IDIyLjUyIDE1LjQ5IDMzLjkxIDIzLjA0IDIuODYgMS45MSA1LjcyIDMuODIgOC41OSA1LjczIDIuNjIgMS43NSA1LjI1IDMuNDkgNy44OSA1LjIzLjc4LjUyIDEuNTcgMS4wNSAyLjM4IDEuNTggMS41NSAxLjAzIDMuMSAyLjA1IDQuNjUgMy4wNyA2LjYxIDQuMzkgMTMuMDYgOC45NyAxOC45OSAxNC4yNy42Ny41OSAxLjM0IDEuMTkgMi4wMyAxLjhDNDI4IDczNSA0MjggNzM1IDQyOSA3NDFjLTMuNzIgNC44NC03LjcgOC4zMS0xMi42MiAxMS44OC0uNzEuNTItMS40MiAxLjA0LTIuMTUgMS41OC0yLjA3IDEuNTItNC4xNSAzLjAzLTYuMjMgNC41NC0xLjAyLjc1LTIuMDUgMS41LTMuMTEgMi4yN3EtMy45MyAyLjg4LTcuODkgNS43M2MtMS45IDEuMzctMy43OSAyLjc1LTUuNjkgNC4xMmwtMi43NiAyYy0xLjU3IDEuMTYtMy4xNCAyLjM1LTQuNjcgMy41OC01Ljk1IDQuNzUtMTIgOC4xNy0xOS43NiA4LjQyLTkuNjQtMS45NS0xOC4yNC04LjMyLTI2LjE5LTEzLjgtNC4xNC0yLjgzLTguMzItNS42LTEyLjQ5LTguMzgtLjkyLS42Mi0xLjg1LTEuMjMtMi44LTEuODctNS4yOC0zLjUyLTEwLjYtNi45OS0xNS45OC0xMC4zNy01LjM0LTMuNDEtMTAuNTktNi45Ni0xNS44NS0xMC40OS0yLjY2LTEuNzgtNS4zMy0zLjU2LTgtNS4zMy04NC42OC01Ni40Ni04NC42OC01Ni40Ni04Ni41OS01Ny43NC0xLjI3LS44NC0yLjU0LTEuNjgtMy44LTIuNTMtMi44NS0xLjktNS43LTMuNzktOC41NC01LjctMTIuODQtOC42LTI1Ljg5LTE2LjgxLTM5LjExLTI0LjgyLTEuNjEtLjk5LTMuMTktMi4wNC00Ljc3LTMuMDloLThjLS43OCAyLjc3LTEuMTIgNS4yMS0xLjExIDguMDggMCAuODEuMDEgMS42Mi4wMSAyLjQ2IDAgLjg4LjAxIDEuNzcuMDIgMi42OCAwIC45NSAwIDEuOS4wMSAyLjg4LjAxIDMuMjEuMDMgNi40MS4wNSA5LjYybC4wMyA2Ljk1Yy4wMiA1LjcyLjA1IDExLjQ0LjA4IDE3LjE2LjA0IDYuODguMDcgMTMuNzYuMDkgMjAuNjMuMDIgMy42MS4wMyA3LjIxLjA1IDEwLjgyIDAgLjM2IDAgLjM2LjAxIDIuMmwuMDkgMjAuNTRjLjE1IDMzLjE1LjI4IDY2LjMxLjQgOTkuNDYgMCAxLjcuMDEgMy40MS4wMSA1LjExLjI5IDgwLjI5LjQxIDE2MC41OC40NCAyNDAuODcgMCAxMy40NC4wMSAyNi44Ny4wMyA0MC4zLjAxIDE1LjMzLjAyIDMwLjY2LjAyIDQ1Ljk5IDAgNy44NSAwIDE1LjcxLjAxIDIzLjU2LjAxIDYuNTQuMDEgMTMuMDcuMDEgMTkuNi0uMDEgMy4zLS4wMSA2LjU5IDAgOS44OC4wMSAzLjU2IDAgNy4xMSAwIDEwLjY3IDAgMS4wMi4wMSAyLjAzLjAxIDMuMDgtLjA0IDkuMTQtLjMzIDE4LjE0LTYuMjYgMjUuNDYtNi40MyAzLjQ5LTEyLjIyIDMuNDItMTkuNDMgMy4zNmgtMy42MmMtMi41MSAwLTUuMDItLjAxLTcuNTQtLjAyLTMuODMtLjAzLTcuNjYtLjAyLTExLjUtLjAyLTIuNDUgMC00LjktLjAxLTcuMzQtLjAyaC0zLjQ2Yy05LjQyLS4wOC0xNS4xOC0uMzctMjIuMTEtNy4zLTIuMTYtNy4wMS0yLjI4LTEzLjUzLTIuMjUtMjAuODMgMC0xLjI5IDAtMi41OC0uMDEtMy45MSAwLTMuNTggMC03LjE2LjAxLTEwLjc1LjAxLTMuODkgMC03Ljc5IDAtMTEuNjhxLS4wMTUtMTAuMjQ1IDAtMjAuNDljLjAxLTEwLjE2LjAxLTIwLjMxIDAtMzAuNDcgMC0xNy4wOCAwLTM0LjE3LjAxLTUxLjI1LjAxLTE2LjkzLjAxLTMzLjg2LjAxLTUwLjc4di0xNi4wMWMwLTQwLjEuMDEtODAuMTkuMDMtMTIwLjI5LjAxLTM1LjYyLjAyLTcxLjI0LjAxLTEwNi44NnYtMzAuNzZjMC0yOS43Ni4wMS01OS41My4wMS04OS4yOSAwLTEuMDYuMDEtMi4xMi4wMS0zLjIxdi01Ny4yYzAtMTkuMDkuMDEtMzguMTguMDItNTcuMjh2LTMwLjI4YzAtNi43NS4wMS0xMy40OS4wMS0yMC4yNCAwLTMuODQuMDEtNy42OCAwLTExLjUyIDAtNC4xNS4wMS04LjI5LjAxLTEyLjQ0di0zLjU5Yy4wNS0yMS40My4wNS0yMS40MyA0LjEzLTI2Ljg3Ii8+PHBhdGggZmlsbD0iIzI4NzRiMyIgZD0iTTYxNSAxNDRjMTcuMzIgMCAzNy45NyAyMS40MSA1MCAzM2wxLjk0IDEuNzljNS43NiA1LjQzIDEwLjM2IDExLjg3IDE1LjA2IDE4LjIxLjYzLjg0IDEuMjYgMS42NyAxLjkxIDIuNTQgMTcuNDIgMjMuODEgMjUuNTQgNTMuODUgMjUuNCA4My4xNSAwIC42MSAwIC42MS0uMDEgMy43MS0uMTMgOS44NC0xLjE2IDE5LjAyLTMuMyAyOC42LS4zNCAxLjY3LS42OSAzLjM1LTEuMDMgNS4wMi04LjQ2IDM5LjYxLTMwLjE2IDczLjE3LTUyLjg4IDEwNS45OS00LjggNi45Ni05LjM2IDE0LjA2LTEzLjkyIDIxLjE4LTEuMDggMS42Ny0yLjIgMy4zMy0zLjMyIDQuOTgtMS43MSAyLjYyLTMuMTIgNS4yLTQuNDcgOC4wMi0yLjI0IDQuNTYtNC41NiA5LjA1LTYuOTYgMTMuNTItMTEuMzQgMjEuMi0xOS41MiA0Mi44Mi0yNS43OSA2Ni0uNTIgMS44Ny0xLjA2IDMuNzQtMS42IDUuNi00LjE4IDE1LjQ4LTQuMjQgMzIuNDMtMy45NyA0OC4zOC0uMjEgMTEuNDYtLjIxIDExLjQ2LTMuMDYgMTQuMzEtMTQuNiAwLTI3LjMyLTEyLjg3LTM4LTIyLS45My0uNzctMS44NS0xLjU0LTIuODEtMi4zNC0xMS41Mi05LjktMjAuNC0yMS43MS0yOC4xOS0zNC42Ni0uNjMtMS0xLjI1LTEuOTktMS45LTMuMDItNC4xLTYuNjktNy4wOC0xMy41MS05Ljg0LTIwLjgzQzUwNyA1MjIgNTA3IDUyMiA1MDUgNTE5Yy0xNC4wNC00Mi4yLTkuNDktODcuMTEgOS43Ny0xMjYuNzQgMi40MS00LjgxIDQuOTYtOS41MSA3Ljg0LTE0LjA2IDEuMTQtMS44IDIuMjEtMy42NSAzLjI2LTUuNTEgMi4xNC0zLjc3IDQuNTEtNy4zNSA2Ljk0LTEwLjk0IDMuNTUtNS4yOCA3LjA1LTEwLjU5IDEwLjQ0LTE1Ljk4IDEuNjUtMi42MSAzLjMxLTUuMjEgNC45OC03LjgxIDMuOS02LjEzIDcuNjYtMTIuMzUgMTEuMzktMTguNTguNjUtMS4wNyAxLjI5LTIuMTQgMS45NS0zLjI0IDMuMTktNS4zMiA2LjMtMTAuNjYgOS4yOC0xNi4xIDEuMTEtMS45NyAyLjI4LTMuODkgMy40OC01LjgxQzU4Ny44NiAyNzIuMzkgNTk4LjQgMjQ3LjUxIDYwNiAyMjNsMS4zOC00LjJjNy42Ni0yMy45NSA5LjI3LTQ3LjgyIDYuNjItNzIuOHoiLz48cGF0aCBmaWxsPSIjMTQ5MjQ5IiBkPSJNNDgzIDMyYzEzLjY1LTEuNDUgMjcuNzQgMTMuMiAzOCAyMXYyYy41NC4yMiAxLjA5LjQ0IDEuNjQuNjYgMy4xNiAxLjc5IDUuNTMgNC4yMSA4LjA1IDYuNzguMjYuMjcuMjYuMjcgMS42MSAxLjYzIDQuOTEgNS4wNSA5LjQ0IDEwLjMxIDEzLjcgMTUuOTMuNDYuNi45MiAxLjIxIDEuMzkgMS44MyAxOS40MiAyNS44MyAyOS45IDUzLjU1IDMwLjU2IDg1Ljk3LjA1IDIuMDUuMTMgNC4wOS4yMSA2LjE0LjczIDI5LjgyLTcuMzEgNTguODMtMjEuMTYgODUuMDYtLjYgMS4yMi0xLjIgMi40NS0xLjggMy42OC0zLjQ4IDcuMTctNy4xNiAxNC4xOS0xMS4yIDIxLjA3LS4zOC42NS0uNzYgMS4zLTEuMTUgMS45Ni0zLjcyIDYuMjUtNy43OSAxMi4yNi0xMS44NSAxOC4yOS0xNi44OCAyNS4xNi0xNi44OCAyNS4xNi0yNCAzNy0xLjM3IDIuMjEtMi43NSA0LjQyLTQuMTIgNi42MkM0ODUuMzkgMzc2LjEgNDcxLjU5IDQwNy4xNyA0NjUgNDQwcS0uMjQgMS4xNy0uNDggMi4zN2MtMy41NyAxOC4yOC0zLjI1IDM3LjA3LTMuNTIgNTUuNjNsLTMgM2MtNi40LTEuOC0xMS40OS00LjI0LTE2Ljg4LTguMTItLjY5LS40OS0xLjM4LS45OC0yLjA5LTEuNDktMjMuMTgtMTYuNTUtNDAuNzctMzYuNTgtNTMuMDMtNjIuMzktLjQ4LS45OC0uOTYtMS45Ny0xLjQ2LTIuOTgtNi45OS0xNC41OC0xMi4xLTI5LjA0LTE0LjU0LTQ1LjAyLS4wOC0uMzYtLjA4LS4zNi0uNTEtMi4xOS0uNjQtMy42Ny0uNzEtNy4zMS0uNzYtMTEuMDItLjAyLS44LS4wMy0xLjU5LS4wNC0yLjQyLS4yMi0xNy43LjA1LTM0LjI5IDUuMzEtNTEuMzcuMzYtMS4yMi43MS0yLjQ0IDEuMDgtMy43Ljg5LTIuODEgMS44Ni01LjU1IDIuOTItOC4zLjE0LS4zOS4xNC0uMzkuODYtMi4zNyA2LjA1LTE2LjEgMTQuOTktMzEuMzMgMjQuMy00NS43MyAyLjE0LTMuMzcgNC4xOC02Ljc4IDYuMjItMTAuMjEgMi44OC00Ljg2IDUuODUtOS42NCA4LjkzLTE0LjM4IDMuODEtNS44NiA3LjQ2LTExLjgyIDExLjA3LTE3LjgxLjI1LS40Mi4yNS0uNDIgMS41NS0yLjU3IDIuNTMtNC4yNCA0LjkyLTguNDggNy4wNy0xMi45MyAyLjk5LTUuNjUgNi4xMS0xMS4yIDkuMzgtMTYuNjkgMy44Ni02LjU4IDcuMjctMTMuMzUgMTAuNi0yMC4yMiAxLjAxLTIuMDcgMi4wMy00LjEzIDMuMDYtNi4xOSA1LjI0LTEwLjY3IDkuMjUtMjEuNjEgMTIuOTYtMzIuOS40Ny0xLjM5Ljk0LTIuNzcgMS40MS00LjE2IDEuMDgtMy4yNiAyLjA4LTYuNTUgMy4wMi05Ljg2LjM4LTEuMy43Ni0yLjYxIDEuMTctMy45IDYuNDctMjEuMjIgNC40OC00Ni4yMSAyLjQtNjguMDh6Ii8+PC9zdmc+Cg==" alt="شعار الحديثة للغاز الطبيعي"></div>
+      <div class="brand-name">الحديثة للغاز الطبيعي</div>
+      <div class="brand-sub">إدارة شبكات الغاز الطبيعي</div>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-head" data-group="home" onclick="toggleGroup('home')">
+        <span>الرئيسية</span>
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-head" data-group="facility-followup" onclick="showPage('facility-followup')">
+        <span>متابعة الصيانة الوقائية</span>
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-head" data-group="facility" onclick="toggleGroup('facility')">
+        <span>صيانة وقائية</span>
+        <span class="chev">▾</span>
+      </button>
+      <div class="nav-sub" data-sub="facility">
+        <button class="nav-link" data-page="facility-entry" onclick="showPage('facility-entry')">تسجيل حالة</button>
+        <button class="nav-link" data-page="facility-report" onclick="showPage('facility-report')">تقرير</button>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-head" data-group="valves" onclick="toggleGroup('valves')">
+        <span>محابس</span>
+        <span class="chev">▾</span>
+      </button>
+      <div class="nav-sub" data-sub="valves">
+        <button class="nav-link" data-page="valves-maintenance" onclick="showPage('valves-maintenance')">صيانة المحابس</button>
+        <button class="nav-link" data-page="valves-monthly" onclick="showPage('valves-monthly')">تقرير شهري لصيانة المحابس</button>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <button class="nav-head" data-group="regulators" onclick="toggleGroup('regulators')">
+        <span>صيانات منظمات</span>
+        <span class="chev">▾</span>
+      </button>
+      <div class="nav-sub" data-sub="regulators">
+        <button class="nav-link" data-page="reg-followup" onclick="showPage('reg-followup')">متابعة صيانة منظم</button>
+        <button class="nav-link" data-page="reg-work-log" onclick="showPage('reg-work-log')">متابعة أعمال الصيانة بالمنظمات</button>
+        <button class="nav-link" data-page="reg-work-report" onclick="showPage('reg-work-report')">تقرير شهري لمتابعة الأعمال</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main" id="mainArea">
+
+    <!-- ============ HOME ============ -->
+    <div data-pageview="home">
+      <div class="page-head">
+        <div>
+          <h1>مرحبًا بك</h1>
+        </div>
+      </div>
+      <div class="panel">
+        <p style="color:var(--ink-soft); margin:0 0 16px 0;">اختر من القائمة الجانبية القسم المطلوب لتسجيل بيانات صيانة جديدة أو عرض التقارير.</p>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+          <div style="border:1px solid var(--line); border-radius:8px; padding:16px;">
+            <div style="font-weight:700; color:var(--navy); margin-bottom:4px;">صيانة منشأ</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">سكني، تجاري، صناعي</div>
+          </div>
+          <div style="border:1px solid var(--line); border-radius:8px; padding:16px;">
+            <div style="font-weight:700; color:var(--navy); margin-bottom:4px;">محابس</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">صيانة، كارت تعريف، مكونات شبكة</div>
+          </div>
+          <div style="border:1px solid var(--line); border-radius:8px; padding:16px;">
+            <div style="font-weight:700; color:var(--navy); margin-bottom:4px;">صيانات منظمات</div>
+            <div style="font-size:12.5px; color:var(--ink-soft);">كروت تعريف، متابعة، تقارير</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ صيانة وقائية: تسجيل حالة ============ -->
+    <div data-pageview="facility-entry" style="display:none;">
+      <div class="breadcrumb">صيانة وقائية</div>
+      <div class="page-head"><h1>تسجيل حالة</h1></div>
+      <div class="panel">
+        <div class="form-grid">
+          <div class="f-item"><label>تاريخ حل المشكلة</label><input type="date" id="fe-fix-date"></div>
+          <div class="f-item full"><label>ملاحظات</label><textarea id="fe-notes" placeholder="أي ملاحظات إضافية..."></textarea></div>
+
+          <div class="f-item">
+            <label>نوع المنشأ</label>
+            <select class="dd" id="fe-type">
+              <option value="">اختر...</option>
+              <option value="سكني">سكني</option>
+              <option value="تجاري">تجاري</option>
+              <option value="صناعي">صناعي</option>
+            </select>
+          </div>
+          <div class="f-item"><label>اسم الفني</label><input type="text" id="fe-tech" placeholder="اسم الفني القائم بالعمل"></div>
+          <div class="f-item"><label>تاريخ المرور</label><input type="date" id="fe-visit-date"></div>
+
+          <div class="f-item">
+            <label>كشف التسريب</label>
+            <select class="dd" id="fe-leak" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="يوجد" data-tone="bad">يوجد</option>
+              <option value="لا يوجد" data-tone="good">لا يوجد</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>مخلفات أو عبث أو تركيبات</label>
+            <select class="dd" id="fe-debris" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="يوجد" data-tone="bad">يوجد</option>
+              <option value="لا يوجد" data-tone="good">لا يوجد</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قاعدة البراكت</label>
+            <select class="dd" id="fe-bracket" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="سليم" data-tone="good">سليم</option>
+              <option value="غير سليم" data-tone="bad">غير سليم</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>عبث شاكوش</label>
+            <select class="dd" id="fe-hammer" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="يوجد" data-tone="bad">يوجد</option>
+              <option value="لا يوجد" data-tone="good">لا يوجد</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>حالة الكلبسات</label>
+            <select class="dd" id="fe-clamps" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="يوجد" data-tone="good">يوجد</option>
+              <option value="لا يوجد" data-tone="bad">لا يوجد</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>حالة الدهان</label>
+            <select class="dd" id="fe-paint" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="سليم" data-tone="good">سليم</option>
+              <option value="غير سليم" data-tone="bad">غير سليم</option>
+            </select>
+          </div>
+
+          <div class="f-item"><label>عمارة</label><input type="text" id="fe-building" placeholder="رقم العمارة"></div>
+          <div class="f-item"><label>بلوك</label><input type="text" id="fe-block" placeholder="رقم البلوك"></div>
+          <div class="f-item"><label>قطاع</label><input type="text" id="fe-sector" placeholder="اسم القطاع"></div>
+
+          <div class="f-item">
+            <label>محافظة</label>
+            <select class="dd" id="fe-gov" onchange="updateAreaOptions()">
+              <option value="">اختر...</option>
+              <option value="القاهرة">القاهرة</option>
+              <option value="القليوبية">القليوبية</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>منطقة</label>
+            <select class="dd" id="fe-area">
+              <option value="">اختر المحافظة أولاً</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary">حفظ السجل</button>
+          <button class="btn btn-ghost">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ صيانة وقائية: تقرير ============ -->
+    <div data-pageview="facility-report" style="display:none;">
+      <div class="breadcrumb">صيانة وقائية</div>
+      <div class="page-head"><h1>تقرير</h1></div>
+
+      <div class="panel no-print">
+        <div class="filter-bar">
+          <div class="filter-item"><label>من تاريخ</label><input type="date" id="fr-from"></div>
+          <div class="filter-item"><label>إلى تاريخ</label><input type="date" id="fr-to"></div>
+          <button class="btn btn-amber" onclick="genFacilityReport()">عرض التقرير</button>
+        </div>
+      </div>
+
+      <div class="panel report-hidden" id="fr-report">
+        <div class="report-title no-print" style="text-align:left; margin-bottom:10px;">
+          <button class="btn btn-ghost" onclick="window.print()">🖨 طباعة التقرير</button>
+        </div>
+        <div class="report-title">
+          <h2>تقرير الصيانة الوقائية</h2>
+          <p id="fr-range">الفترة: —</p>
+        </div>
+        <div class="tbl-wrap"><table class="data-tbl">
+          <thead><tr>
+            <th>تاريخ حل المشكلة</th><th>ملاحظات</th><th>نوع المنشأ</th><th>اسم الفني</th><th>تاريخ المرور</th><th>كشف التسريب</th><th>مخلفات أو عبث أو تركيبات</th><th>قاعدة البراكت</th><th>عبث شاكوش</th><th>حالة الكلبسات</th><th>حالة الدهان</th><th>عمارة</th><th>بلوك</th><th>قطاع</th><th>محافظة</th><th>منطقة</th>
+          </tr></thead>
+          <tbody id="fr-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ============ صيانة وقائية: متابعة الصيانة الوقائية ============ -->
+    <div data-pageview="facility-followup" style="display:none;">
+<div class="page-head">
+    <h1>متابعة الصيانة الوقائية</h1>
+    <button class="btn btn-ghost no-print" onclick="window.print()">🖨 طباعة</button>
+  </div>
+
+  <div class="panel no-print">
+    <div class="form-grid" style="grid-template-columns: repeat(3,1fr);">
+      <div class="f-item">
+        <label>محافظة</label>
+        <select class="dd" id="pm-gov" onchange="pmUpdateAreas()">
+          <option value="">اختر...</option>
+          <option value="11">11</option>
+        </select>
+      </div>
+      <div class="f-item">
+        <label>منطقة</label>
+        <select class="dd" id="pm-area" onchange="pmUpdateSectors()">
+          <option value="">اختر المحافظة أولاً</option>
+        </select>
+      </div>
+      <div class="f-item">
+        <label>قطاع</label>
+        <select class="dd" id="pm-sector" onchange="pmLoadSectorData()">
+          <option value="">اختر المنطقة أولاً</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="pm-empty-msg">
+    <div class="empty-note">يرجى اختيار المحافظة والمنطقة والقطاع لعرض بيانات العمارات</div>
+  </div>
+
+  <div class="panel report-hidden" id="pm-table-panel">
+    <div class="report-title">
+      <h2 id="pm-table-title">بيانات العمارات</h2>
+      <p id="pm-table-count"></p>
+    </div>
+    <div class="pm-wrap">
+      <table class="pm-tbl">
+        <colgroup>
+          <col class="col-block"><col class="col-building">
+          <col class="col-radio"><col class="col-radio">
+          <col class="col-radio"><col class="col-radio">
+          <col class="col-radio"><col class="col-radio">
+          <col class="col-radio"><col class="col-radio">
+          <col class="col-radio"><col class="col-radio">
+          <col class="col-classify">
+          <col class="col-date"><col class="col-note"><col class="col-date">
+        </colgroup>
+        <thead>
+          <tr>
+            <th rowspan="2">بلوك</th><th rowspan="2">عمارة</th>
+            <th colspan="2">دهان</th>
+            <th colspan="2">كلبسات</th>
+            <th colspan="2">عبث الشاكوش</th>
+            <th colspan="2">قاعدة البراكت</th>
+            <th colspan="2">مخلفات أو عبث أو تركيبات</th>
+            <th rowspan="2">تصنيف أعطال العبث</th>
+            <th rowspan="2">تاريخ المرور</th><th rowspan="2">شرح الملاحظة</th><th rowspan="2">تاريخ انتهاء الملاحظة</th>
+          </tr>
+          <tr>
+            <th>صح</th><th>غلط</th>
+            <th>صح</th><th>غلط</th>
+            <th>يوجد</th><th>لا يوجد</th>
+            <th>صح</th><th>غلط</th>
+            <th>يوجد</th><th>لا يوجد</th>
+          </tr>
+        </thead>
+        <tbody id="pm-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+<button class="fab-save no-print" id="fabSaveBtn" onclick="pmSaveAll()">
+  <span class="fab-icon">💾</span>
+  <span>حفظ كل البيانات</span>
+</button>
+    </div>
+
+    <!-- ============ VALVES: صيانة المحابس ============ -->
+    <div data-pageview="valves-maintenance" style="display:none;">
+      <div class="breadcrumb">محابس</div>
+      <div class="page-head">
+        <h1>صيانة المحابس</h1>
+        <button class="btn btn-ghost no-print" onclick="showCoords('vmnt')">📍 الإحداثيات</button>
+      </div>
+      <div class="panel">
+        <div class="form-grid">
+          <div class="f-item"><label>رقم المحبس</label><input type="text" placeholder="رقم المحبس"></div>
+          <div class="f-item">
+            <label>نوع المحبس</label>
+            <select class="dd" id="vmnt-type" onchange="updateValveDiameter()">
+              <option value="">اختر...</option>
+              <option value="بولي تك">بولي تك</option>
+              <option value="صلب">صلب</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطر المحبس</label>
+            <select class="dd" id="vmnt-diameter">
+              <option value="">اختر نوع المحبس أولاً</option>
+            </select>
+          </div>
+          <div class="f-item"><label>منسوب المحبس</label><input type="text" placeholder="المنسوب"></div>
+          <div class="f-item">
+            <label>P.V.C</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="سليم" data-tone="good">سليم</option>
+              <option value="غير سليم" data-tone="bad">غير سليم</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ تركيب P.V.C</label><input type="date"></div>
+          <div class="f-item">
+            <label>نظافة المحبس</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="نظيف" data-tone="good">نظيف</option>
+              <option value="غير نظيف" data-tone="bad">غير نظيف</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>كشف التسريب</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="يوجد تسريب" data-tone="bad">يوجد تسريب</option>
+              <option value="لا يوجد تسريب" data-tone="good">لا يوجد تسريب</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>Box</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="موجود" data-tone="good">موجود</option>
+              <option value="غير موجود" data-tone="bad">غير موجود</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ تركيب Box</label><input type="date"></div>
+          <div class="f-item">
+            <label>سلسلة البوكس</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="موجود" data-tone="good">موجود</option>
+              <option value="غير موجود" data-tone="bad">غير موجود</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>فتح وغلق جزئي للمحبس</label>
+            <select class="dd" onchange="ddColor(this)">
+              <option value="">اختر...</option>
+              <option value="سهل" data-tone="good">سهل</option>
+              <option value="صعب" data-tone="bad">صعب</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ صيانة المحبس</label><input type="date"></div>
+          <div class="f-item"><label>تاريخ معالجة المشكلة</label><input type="date"></div>
+          <div class="f-item">
+            <label>نوع الصيانة</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="طارئة">طارئة</option>
+              <option value="دورية">دورية</option>
+            </select>
+          </div>
+          <div class="f-item"><label>نوع المشكلة</label><input type="text" placeholder="وصف المشكلة"></div>
+          <div class="f-item"><label>الإجراء المتخذ</label><input type="text" placeholder="الإجراء الذي تم اتخاذه"></div>
+          <div class="f-item"><label>القائم بالعمل</label><input type="text" placeholder="اسم الفني"></div>
+
+          <div class="f-item">
+            <label>محافظة</label>
+            <select class="dd" id="vmnt-gov" onchange="updateAreaOptionsGeneric('vmnt-gov','vmnt-area')">
+              <option value="">اختر...</option>
+              <option value="القاهرة">القاهرة</option>
+              <option value="القليوبية">القليوبية</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>منطقة</label>
+            <select class="dd" id="vmnt-area" onchange="updateSectorOptions('vmnt')">
+              <option value="">اختر المحافظة أولاً</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطاع</label>
+            <select class="dd" id="vmnt-sector">
+              <option value="">اختر المنطقة أولاً</option>
+            </select>
+          </div>
+
+          <div class="f-item full"><label>ملحوظة</label><textarea placeholder="أي ملاحظات إضافية..."></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary">حفظ السجل</button>
+          <button class="btn btn-ghost">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VALVES: تقرير شهري لصيانة المحابس ============ -->
+    <div data-pageview="valves-monthly" style="display:none;">
+      <div class="breadcrumb">محابس</div>
+      <div class="page-head"><h1>تقرير شهري لصيانة المحابس</h1></div>
+
+      <div class="panel no-print">
+        <div class="filter-bar">
+          <div class="filter-item"><label>من تاريخ</label><input type="date" id="vm-from"></div>
+          <div class="filter-item"><label>إلى تاريخ</label><input type="date" id="vm-to"></div>
+          <button class="btn btn-amber" onclick="genValvesMonthly()">عرض التقرير</button>
+        </div>
+      </div>
+
+      <div class="panel report-hidden" id="vm-report">
+        <div class="report-title no-print" style="text-align:left; margin-bottom:10px;">
+          <button class="btn btn-ghost" onclick="window.print()">🖨 طباعة التقرير</button>
+        </div>
+        <div class="report-title">
+          <h2>تقرير شهري لصيانة المحابس</h2>
+          <p id="vm-range">الفترة: —</p>
+        </div>
+        <div class="tbl-wrap"><table class="data-tbl">
+          <thead><tr>
+            <th>اسم المحبس CRN</th><th>نوع المحبس</th><th>نوع الصيانة</th><th>نوع المشكلة</th><th>تاريخ الملاحظة</th><th>الإجراء المتخذ</th><th>تاريخ الانتهاء</th><th>ملاحظات</th>
+          </tr></thead>
+          <tbody id="vm-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+
+    <!-- ============ REGULATORS: متابعة صيانة منظم ============ -->
+    <div data-pageview="reg-followup" style="display:none;">
+      <div class="breadcrumb">صيانات منظمات</div>
+      <div class="page-head">
+        <h1>متابعة صيانة منظم
+          <select class="dd title-select" id="regf-type">
+            <option value="">اختر النوع...</option>
+            <option value="سكني">سكني</option>
+            <option value="تجاري">تجاري</option>
+            <option value="صناعي">صناعي</option>
+          </select>
+          <span class="title-meta" id="regf-meta"></span>
+        </h1>
+        <div class="head-actions no-print">
+          <button class="btn btn-ghost" id="regf-coords-btn" onclick="showCoords('regf')">📍 الإحداثيات</button>
+          <button class="btn btn-ghost" onclick="window.print()">🖨 طباعة النموذج</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="form-grid">
+          <div class="f-item">
+            <label>محافظة</label>
+            <select class="dd" id="regf-gov" onchange="updateAreaOptionsGeneric('regf-gov','regf-area'); clearSector('regf')">
+              <option value="">اختر...</option>
+              <option value="القاهرة">القاهرة</option>
+              <option value="القليوبية">القليوبية</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>منطقة</label>
+            <select class="dd" id="regf-area" onchange="updateSectorOptions('regf')">
+              <option value="">اختر المحافظة أولاً</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطاع</label>
+            <select class="dd" id="regf-sector" onchange="applySectorData('regf')">
+              <option value="">اختر المنطقة أولاً</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطر رجل الدخول</label>
+            <select class="dd" id="regf-in-dia">
+              <option value="">اختر...</option>
+              <option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطر رجل الخروج</label>
+            <select class="dd" id="regf-out-dia">
+              <option value="">اختر...</option>
+              <option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطر محبس الدخول الأرضي</label>
+            <select class="dd" id="regf-in-valve-dia">
+              <option value="">اختر...</option>
+              <option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>63</option><option>90</option><option>125</option><option>180</option><option>250</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>نوع محبس الدخول</label>
+            <select class="dd" id="regf-in-valve-type">
+              <option value="">اختر...</option>
+              <option>بولي تك</option><option>صلب</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>قطر محبس الخروج الأرضي</label>
+            <select class="dd" id="regf-out-valve-dia">
+              <option value="">اختر...</option>
+              <option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>63</option><option>90</option><option>125</option><option>180</option><option>250</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>نوع محبس الخروج</label>
+            <select class="dd" id="regf-out-valve-type">
+              <option value="">اختر...</option>
+              <option>بولي تك</option><option>صلب</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ تشغيل المنظم</label><input type="date" id="regf-op-date"></div>
+          <div class="f-item">
+            <label>سعة المنظم الرئيسي</label>
+            <select class="dd" id="regf-capacity">
+              <option value="">اختر...</option>
+              <option>1000</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sec-title">المنظم الرئيسي</div>
+        <div class="tbl-wrap">
+          <table class="data-tbl grouped-tbl">
+            <thead>
+              <tr class="pressure-header-row">
+                <th></th>
+                <th>ضغط الدخول: <span class="pressure-inline"><input type="text" id="regf-p-in" value="4 bar"></span></th>
+                <th>ضغط الخروج: <span class="pressure-inline"><input type="text" id="regf-p-out" value="100 m/bar"></span></th>
+                <th></th>
+              </tr>
+              <tr>
+                <th style="width:24%">المنظم الرئيسي</th>
+                <th>الحالة قبل</th>
+                <th>الحالة بعد</th>
+                <th>ملحوظة</th>
+              </tr>
+
+            </thead>
+            <tbody id="tbl-main-reg-followup"></tbody>
+          </table>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="sec-title-row">
+              <div class="sec-title">المنظمات الفرعية</div>
+              <button type="button" class="btn-add-row no-print" onclick="addSubRegRow('tbl-sub-reg-followup')">+ إضافة منظم فرعي</button>
+            </div>
+            <div class="tbl-wrap">
+              <table class="data-tbl">
+                <thead>
+                  <tr>
+                    <th>المنظمات الفرعية</th>
+                    <th>الحالة قبل</th>
+                    <th>الحالة بعد</th>
+                    <th>ملحوظة</th>
+                    <th class="no-print" style="width:1%"></th>
+                  </tr>
+                </thead>
+                <tbody id="tbl-sub-reg-followup"></tbody>
+              </table>
+            </div>
+
+            <div class="sec-title-row">
+              <div class="sec-title">الحماية الكاثودية</div>
+              <button type="button" class="btn-add-row no-print" onclick="addCathodicRow('tbl-cathodic-followup')">+ إضافة صاعد</button>
+            </div>
+            <div class="tbl-wrap">
+              <table class="data-tbl">
+                <thead><tr><th>الصاعد</th><th>قبل الفلانشة</th><th>بعد الفلانشة</th><th class="no-print" style="width:1%"></th></tr></thead>
+                <tbody id="tbl-cathodic-followup"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="sec-title" style="display: block;">العدادات وتصحيح الحجم</div>
+            <div class="tbl-wrap">
+              <table class="data-tbl">
+                <thead><tr><th>العداد</th><th>القراءة السابقة</th><th>القراءة الحالية</th></tr></thead>
+                <tbody>
+                  <tr><td class="row-label">العداد التوربيني</td><td><input id="regf-turbine-prev"></td><td><input></td></tr>
+                  <tr><td class="row-label">Volume Corrector</td><td><input id="regf-vc-prev"></td><td><input></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-title">بيانات ختامية</div>
+        <div class="form-grid">
+          <div class="f-item full"><label>ملحوظة</label><textarea></textarea></div>
+          <div class="f-item wide"><label>سبب الزيارة</label><textarea></textarea></div>
+          <div class="f-item wide">
+            <label>قطع الغيار التي تم استبدالها</label>
+            <div class="parts-box" id="regf-parts-used">
+              <span class="parts-empty">اختر القطاع أولًا لعرض قطع الغيار الخاصة به</span>
+            </div>
+          </div>
+          <div class="f-item wide">
+            <label>قطع الغيار المطلوبة</label>
+            <div class="parts-box" id="regf-parts-needed">
+              <span class="parts-empty">اختر القطاع أولًا لعرض قطع الغيار الخاصة به</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary">حفظ السجل</button>
+          <button class="btn btn-ghost">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ REGULATORS: تقرير شهري ============ -->
+    <!-- ============ REGULATORS: متابعة أعمال الصيانة بالمنظمات ============ -->
+    <div data-pageview="reg-work-log" style="display:none;">
+      <div class="breadcrumb">صيانات منظمات</div>
+      <div class="page-head"><h1>متابعة أعمال الصيانة بالمنظمات</h1></div>
+      <div class="panel">
+        <div class="form-grid">
+          <div class="f-item"><label>اسم المنظم CRN</label><input type="text" placeholder="مثال: REG-1042"></div>
+          <div class="f-item">
+            <label>سعة المنظم</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="1000">1000</option>
+              <option value="2000">2000</option>
+              <option value="5000">5000</option>
+              <option value="10000">10000</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>نوع التغذية</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="LEG">LEG</option>
+              <option value="LOOP">LOOP</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>نوع الصيانة</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="طارئة">طارئة</option>
+              <option value="دورية">دورية</option>
+            </select>
+          </div>
+          <div class="f-item">
+            <label>نوع المشكلة</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="مؤشر عداد الفلتر به قراءة">مؤشر عداد الفلتر به قراءة</option>
+              <option value="إعادة ضبط">إعادة ضبط</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ الملاحظة</label><input type="date"></div>
+          <div class="f-item">
+            <label>الإجراء المتخذ</label>
+            <select class="dd">
+              <option value="">اختر...</option>
+              <option value="تم إعادة ضبط">تم إعادة ضبط</option>
+              <option value="تنظيف فلتر + قراءة حماية كاثودية">تنظيف فلتر + قراءة حماية كاثودية</option>
+            </select>
+          </div>
+          <div class="f-item"><label>تاريخ الانتهاء</label><input type="date"></div>
+          <div class="f-item full"><label>ملاحظات</label><textarea placeholder="أي ملاحظات إضافية..."></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary">حفظ السجل</button>
+          <button class="btn btn-ghost">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ REGULATORS: تقرير شهري لمتابعة الأعمال ============ -->
+    <div data-pageview="reg-work-report" style="display:none;">
+      <div class="breadcrumb">صيانات منظمات</div>
+      <div class="page-head"><h1>تقرير شهري لمتابعة الأعمال</h1></div>
+
+      <div class="panel no-print">
+        <div class="filter-bar">
+          <div class="filter-item"><label>من تاريخ</label><input type="date" id="wr-from"></div>
+          <div class="filter-item"><label>إلى تاريخ</label><input type="date" id="wr-to"></div>
+          <button class="btn btn-amber" onclick="genWorkReport()">عرض التقرير</button>
+        </div>
+      </div>
+
+      <div class="panel report-hidden" id="wr-report">
+        <div class="report-title no-print" style="text-align:left; margin-bottom:10px;">
+          <button class="btn btn-ghost" onclick="window.print()">🖨 طباعة التقرير</button>
+        </div>
+        <div class="report-title">
+          <h2>تقرير شهري لمتابعة أعمال الصيانة بالمنظمات</h2>
+          <p id="wr-range">الفترة: —</p>
+        </div>
+        <div class="tbl-wrap"><table class="data-tbl">
+          <thead><tr>
+            <th>اسم المنظم CRN</th><th>سعة المنظم</th><th>نوع التغذية</th><th>نوع الصيانة</th><th>نوع المشكلة</th><th>تاريخ الملاحظة</th><th>الإجراء المتخذ</th><th>تاريخ الانتهاء</th><th>ملاحظات</th>
+          </tr></thead>
+          <tbody id="wr-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+
+  </main>
+
+</div>
+
+<script>
+/* ============ PAGE REGISTRY ============ */
+const pageMeta = {
+  'home': {group:'home', crumb:'', title:'الرئيسية'},
+  'facility-entry': {group:'facility', crumb:'صيانة وقائية', title:'تسجيل حالة'},
+  'facility-report': {group:'facility', crumb:'صيانة وقائية', title:'تقرير'},
+  'facility-followup': {group:'facility-followup', crumb:'', title:'متابعة الصيانة الوقائية'},
+  'valves-maintenance': {group:'valves', crumb:'محابس', title:'صيانة المحابس'},
+  'valves-monthly': {group:'valves', crumb:'محابس', title:'تقرير شهري لصيانة المحابس'},
+  'reg-followup': {group:'regulators', crumb:'صيانات منظمات', title:'متابعة صيانة منظم'},
+  'reg-work-log': {group:'regulators', crumb:'صيانات منظمات', title:'متابعة أعمال الصيانة بالمنظمات'},
+  'reg-work-report': {group:'regulators', crumb:'صيانات منظمات', title:'تقرير شهري لمتابعة الأعمال'},
+};
+
+function openSidebar(){
+  document.getElementById('sidebarNav').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebarNav').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+function toggleGroup(g){
+  document.querySelectorAll('.nav-sub').forEach(el=>{
+    if(el.dataset.sub===g){ el.classList.toggle('open'); }
+  });
+  document.querySelectorAll('.nav-head').forEach(el=>{
+    if(el.dataset.group===g){ el.classList.toggle('open'); }
+  });
+}
+
+/* ============ COLORED DROPDOWNS (good/bad tone based on selected option) ============ */
+function ddColor(sel){
+  sel.classList.remove('dd-good','dd-bad');
+  const opt = sel.options[sel.selectedIndex];
+  const tone = opt ? opt.dataset.tone : null;
+  if(tone==='good') sel.classList.add('dd-good');
+  else if(tone==='bad') sel.classList.add('dd-bad');
+}
+
+/* ============ محافظة -> منطقة dependent dropdown (مستخدمة في عدة صفحات) ============ */
+const areaOptions = {
+  'القليوبية': ['القلج','الجبل الأصفر'],
+  'القاهرة': ['بدر','مدينتي','هليوبوليس','سراي','نور','كابيتال جراندز','مستقبل','حدائق العاصمة'],
+};
+function updateAreaOptionsGeneric(govId, areaId){
+  const gov = document.getElementById(govId).value;
+  const areaSel = document.getElementById(areaId);
+  if(!gov){
+    areaSel.innerHTML = '<option value="">اختر المحافظة أولاً</option>';
+    return;
+  }
+  const opts = areaOptions[gov] || [];
+  areaSel.innerHTML = '<option value="">اختر...</option>' + opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+function updateAreaOptions(){ updateAreaOptionsGeneric('fe-gov','fe-area'); }
+
+/* ============ منطقة -> قطاعات (بيانات حقيقية) ============ */
+const sectorOptions = {
+  'القلج': ['قطاع 10','قطاع A16','قطاع 17'],
+  'الجبل الأصفر': ['قطاع 1','قطاع A3','قطاع B3','قطاع A5'],
+  'بدر': ['قطاع 1'],
+  'مدينتي': ['قطاع 1'],
+  'هليوبوليس': ['قطاع 1'],
+  'سراي': ['قطاع 1'],
+  'نور': ['قطاع 1'],
+  'كابيتال جراندز': ['قطاع 1'],
+  'مستقبل': ['قطاع 1'],
+  'حدائق العاصمة': ['قطاع 1'],
+};
+
+/* بيانات محفوظة حقيقية لكل قطاع: كود المنظم، نوع الوحدات، الأقطار، تاريخ التشغيل، إحداثيات، وقطع الغيار الخاصة به */
+const sectorSavedData = {
+  'القلج__قطاع 10': {
+    code: 'REG2', unitType: 'Petro Fiorentini',
+    'regf-in-dia':'6','regf-out-dia':'6','regf-in-valve-dia':'6','regf-in-valve-type':'بولي تك',
+    'regf-out-valve-dia':'6','regf-out-valve-type':'بولي تك','regf-op-date':'2015-06-04','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/D3zEsV1DCMyDthMw6?g_st=aw',
+    parts: ['DIVAL 600 G/M MP','DIVAL 600 G/ MP','DIVAL 600 G/ TR','DIVAL 500 G/ TR']
+  },
+  'القلج__قطاع A16': {
+    code: 'REG14', unitType: 'PetroFiorentini',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'6','regf-in-valve-type':'صلب',
+    'regf-out-valve-dia':'6','regf-out-valve-type':'بولي تك','regf-op-date':'2019-09-21','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/5aa37a45wLcZXDGx5?g_st=aw',
+    parts: ['DIVAL 600 G/M MP','DIVAL 600 G/ MP','DIVAL 600 G/ TR','DIVAL 500 G/ TR']
+  },
+  'القلج__قطاع 17': {
+    code: 'REG15', unitType: 'GAS TEC',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'6','regf-in-valve-type':'صلب',
+    'regf-out-valve-dia':'6','regf-out-valve-type':'بولي تك','regf-op-date':'2020-10-25','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/RzeCH4bhh9UF2345A?g_st=aw',
+    parts: ['F50/ MP','F50/S MP','F80/S MP','F80/ MP']
+  },
+  'الجبل الأصفر__قطاع 1': {
+    code: 'REG12', unitType: 'RMG',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'4','regf-in-valve-type':'بولي تك',
+    'regf-out-valve-dia':'4','regf-out-valve-type':'بولي تك','regf-op-date':'2016-05-17','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/ivAS35kP8Q3WKC2TA?g_st=aw',
+    parts: ['50mm Fig280H ECL','RMG - 50mm Fig282H-309LP OPOO']
+  },
+  'الجبل الأصفر__قطاع A3': {
+    code: 'REG18', unitType: 'GASTEC',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'4','regf-in-valve-type':'صلب',
+    'regf-out-valve-dia':'4','regf-out-valve-type':'صلب','regf-op-date':'2025-10-29','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/jdF1TQHhD98aVV2b9?g_st=aw',
+    parts: ['F50/ MP','F50/S MP','F80/S MP','F80/ MP']
+  },
+  'الجبل الأصفر__قطاع B3': {
+    code: 'REG19', unitType: 'GASTEC',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'4','regf-in-valve-type':'صلب',
+    'regf-out-valve-dia':'4','regf-out-valve-type':'صلب','regf-op-date':'2026-02-20','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/ELp5E7pJR252ptkY9?g_st=aw',
+    parts: ['F50/ MP','F50/S MP','F80/S MP','F80/ MP']
+  },
+  'الجبل الأصفر__قطاع A5': {
+    code: 'REG4', unitType: 'Petro Fiorentini',
+    'regf-in-dia':'4','regf-out-dia':'4','regf-in-valve-dia':'4','regf-in-valve-type':'بولي تك',
+    'regf-out-valve-dia':'4','regf-out-valve-type':'بولي تك','regf-op-date':'2015-11-08','regf-capacity':'1000',
+    coordsUrl: 'https://maps.app.goo.gl/fPCjEZm7Gz6UTCYx5?g_st=aw',
+    parts: ['DIVAL 600 G/M MP','DIVAL 600 G/ MP','DIVAL 600 G/ TR','DIVAL 500 G/ TR']
+  },
+};
+
+function updateSectorOptions(prefix){
+  const area = document.getElementById(prefix+'-area').value;
+  const sectorSel = document.getElementById(prefix+'-sector');
+  if(!sectorSel) return;
+  if(!area){
+    sectorSel.innerHTML = '<option value="">اختر المنطقة أولاً</option>';
+    return;
+  }
+  const opts = sectorOptions[area] || ['قطاع 1'];
+  sectorSel.innerHTML = '<option value="">اختر...</option>' + opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+function clearSector(prefix){
+  const sectorSel = document.getElementById(prefix+'-sector');
+  if(sectorSel) sectorSel.innerHTML = '<option value="">اختر المنطقة أولاً</option>';
+  unlockSectorFields(prefix);
+  updateTitleMeta(prefix, null);
+  renderParts(prefix, null);
+}
+
+/* الحقول اللي بتتقفل/تتملا تلقائيًا لما يتحدد قطاع محفوظ قبل كده */
+const sectorLockedFields = ['regf-in-dia','regf-out-dia','regf-in-valve-dia','regf-in-valve-type','regf-out-valve-dia','regf-out-valve-type','regf-op-date','regf-capacity','regf-turbine-prev','regf-vc-prev'];
+
+function applySectorData(prefix){
+  const area = document.getElementById(prefix+'-area').value;
+  const sector = document.getElementById(prefix+'-sector').value;
+  if(!sector){ unlockSectorFields(prefix); updateTitleMeta(prefix, null); renderParts(prefix, null); return; }
+
+  const key = area + '__' + sector;
+  const saved = sectorSavedData[key];
+
+  sectorLockedFields.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(saved && saved[id] !== undefined){
+      el.value = saved[id];
+      el.disabled = true;
+    } else {
+      el.disabled = false;
+    }
+  });
+
+  updateTitleMeta(prefix, saved);
+  renderParts(prefix, saved);
+}
+
+function unlockSectorFields(prefix){
+  sectorLockedFields.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.disabled = false;
+  });
+}
+
+/* عرض كود المنظم ونوع الوحدات جنب العنوان */
+function updateTitleMeta(prefix, saved){
+  const metaEl = document.getElementById(prefix+'-meta');
+  if(!metaEl) return;
+  if(saved && saved.code){
+    metaEl.textContent = `${saved.code} — ${saved.unitType}`;
+  } else {
+    metaEl.textContent = '';
+  }
+}
+
+/* عرض قطع الغيار كـ checkboxes حسب القطاع */
+function renderParts(prefix, saved){
+  const usedBox = document.getElementById(prefix+'-parts-used');
+  const neededBox = document.getElementById(prefix+'-parts-needed');
+  if(!usedBox || !neededBox) return;
+
+  if(!saved || !saved.parts || !saved.parts.length){
+    const emptyMsg = '<span class="parts-empty">اختر القطاع أولًا لعرض قطع الغيار الخاصة به</span>';
+    usedBox.innerHTML = emptyMsg;
+    neededBox.innerHTML = emptyMsg;
+    return;
+  }
+
+  const buildChecks = (namePrefix) => saved.parts.map((p,i)=>
+    `<label class="part-check"><input type="checkbox" name="${namePrefix}"><span>${p}</span></label>`
+  ).join('');
+
+  usedBox.innerHTML = buildChecks(prefix+'-used');
+  neededBox.innerHTML = buildChecks(prefix+'-needed');
+}
+
+/* ============ إحداثيات القطاع (رابط خرائط حقيقي) ============ */
+function showCoords(prefix){
+  const area = document.getElementById(prefix+'-area') ? document.getElementById(prefix+'-area').value : '';
+  const sector = document.getElementById(prefix+'-sector') ? document.getElementById(prefix+'-sector').value : '';
+  if(!sector){
+    alert('يرجى اختيار القطاع أولًا لعرض إحداثياته');
+    return;
+  }
+  const key = area + '__' + sector;
+  const saved = sectorSavedData[key];
+  if(saved && saved.coordsUrl){
+    window.open(saved.coordsUrl, '_blank');
+  } else {
+    alert('لا توجد إحداثيات مسجلة لهذا القطاع بعد');
+  }
+}
+
+/* ============ VALVES: نوع المحبس -> قطر المحبس dependent dropdown ============ */
+const valveDiameterOptions = {
+  'بولي تك': ['250','180','125','90','63'],
+  'صلب': ['2 بوصة','3 بوصة','4 بوصة','6 بوصة','8 بوصة','10 بوصة','12 بوصة'],
+};
+function updateValveDiameter(){
+  const type = document.getElementById('vmnt-type').value;
+  const diaSel = document.getElementById('vmnt-diameter');
+  if(!type){
+    diaSel.innerHTML = '<option value="">اختر نوع المحبس أولاً</option>';
+    return;
+  }
+  const opts = valveDiameterOptions[type] || [];
+  diaSel.innerHTML = '<option value="">اختر...</option>' + opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+/* ============ REGULATOR MAIN TABLE (grouped structure) ============ */
+function mainTblRow(label, extraClass){
+  return `<tr class="${extraClass||''}"><td class="row-label">${label}</td><td><input></td><td><input></td><td><input></td></tr>`;
+}
+function mainTblFilterRow(extraClass){
+  return `<tr class="${extraClass||''}"><td class="row-label">Filter</td>
+    <td><select class="dd"><option value="">اختر...</option><option>يحتاج تنظيف</option><option>نظيف</option></select></td>
+    <td><select class="dd"><option value="">اختر...</option><option>نظيف</option><option>تم التنظيف</option></select></td>
+    <td><input></td></tr>`;
+}
+function mainTblSubHead(text){
+  return `<tr class="subgroup-head"><td colspan="4">${text}</td></tr>`;
+}
+function fillMainRegTable(tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  let html = '';
+  let alt = false;
+  const row = (label, cls) => { alt = !alt; return mainTblRow(label, cls + (alt?' row-alt':'')); };
+  const filterRow = (cls) => { alt = !alt; return mainTblFilterRow(cls + (alt?' row-alt':'')); };
+
+  html += row('Inlet Valve','');
+  html += row('Outlet Valve','');
+  html += mainTblSubHead('الحماية الكاثودية');
+  html += row('رجل الدخول','subgroup-cathodic');
+  html += row('رجل الخروج','subgroup-cathodic');
+  html += row('جسم المنظم','subgroup-cathodic');
+  html += filterRow('');
+  html += mainTblSubHead('Stream 1');
+  html += row('Active','subgroup-stream1');
+  html += row('Monitor','subgroup-stream1');
+  html += row('Relief Valve','subgroup-stream1');
+  html += row('Slumshut','subgroup-stream1');
+  html += mainTblSubHead('Stream 2');
+  html += row('Active','subgroup-stream2');
+  html += row('Monitor','subgroup-stream2');
+  html += row('Relief Valve','subgroup-stream2');
+  html += row('Slumshut','subgroup-stream2');
+
+  tbody.innerHTML = html;
+}
+fillMainRegTable('tbl-main-reg-followup');
+
+function fillTable(tbodyId, rows, cols){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  tbody.innerHTML = rows.map((r,i)=>{
+    let cells = `<td class="row-label">${r}</td>`;
+    for(let j=0;j<cols;j++) cells += `<td><input></td>`;
+    return `<tr class="${i%2===1?'row-alt':''}">${cells}</tr>`;
+  }).join('');
+}
+
+/* ============ DYNAMIC ROWS: المنظمات الفرعية ============ */
+function addSubRegRow(tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  const tr = document.createElement('tr');
+  tr.dataset.prefix = 'منظم فرعي';
+  tr.innerHTML = `<td class="row-label"></td><td><input></td><td><input></td><td><input></td><td class="no-print"><button type="button" class="btn-del-row" onclick="removeRow(this,'${tbodyId}')">حذف</button></td>`;
+  tbody.appendChild(tr);
+  renumberRows(tbodyId);
+}
+// صفين افتراضيين عند بداية الصفحة
+addSubRegRow('tbl-sub-reg-followup');
+addSubRegRow('tbl-sub-reg-followup');
+
+/* ============ DYNAMIC ROWS: الحماية الكاثودية (صواعد) ============ */
+function addCathodicRow(tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  const tr = document.createElement('tr');
+  tr.dataset.prefix = 'الصاعد';
+  tr.innerHTML = `<td class="row-label"></td><td><input></td><td><input></td><td class="no-print"><button type="button" class="btn-del-row" onclick="removeRow(this,'${tbodyId}')">حذف</button></td>`;
+  tbody.appendChild(tr);
+  renumberRows(tbodyId);
+}
+// صاعدين افتراضيين عند بداية الصفحة
+addCathodicRow('tbl-cathodic-followup');
+addCathodicRow('tbl-cathodic-followup');
+
+/* ============ حذف صف + إعادة ترقيم تلقائي ============ */
+function removeRow(btn, tbodyId){
+  btn.closest('tr').remove();
+  renumberRows(tbodyId);
+}
+function renumberRows(tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  let n = 1;
+  tbody.querySelectorAll('tr').forEach(tr=>{
+    if(tr.dataset.prefix){
+      tr.querySelector('.row-label').textContent = `${tr.dataset.prefix} ${n}`;
+      tr.classList.toggle('row-alt', n % 2 === 0);
+      n++;
+    }
+  });
+}
+
+/* ============ REPORTS ============ */
+function fmtDate(d){
+  if(!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+/* --- تقرير الصيانة الوقائية --- */
+function genFacilityReport(){
+  const from = document.getElementById('fr-from').value;
+  const to = document.getElementById('fr-to').value;
+  if(!from || !to){ alert('يرجى تحديد الفترة من وإلى أولًا'); return; }
+  document.getElementById('fr-range').textContent = `الفترة من ${fmtDate(from)} إلى ${fmtDate(to)}`;
+
+  // بيانات توضيحية - في النظام الحقيقي هيتم جلبها من السجلات المحفوظة بالفترة المحددة
+  const sample = [
+    [from,'تم إصلاح التسريب','سكني','أحمد محمود',from,'يوجد','لا يوجد','سليم','لا يوجد','يوجد','سليم','12','3','القطاع الأول','القاهرة','بدر'],
+    [to,'—','تجاري','محمد علي',to,'لا يوجد','يوجد','غير سليم','لا يوجد','يوجد','غير سليم','7','1','القطاع الثاني','القليوبية','القلج'],
+  ];
+  document.getElementById('fr-tbody').innerHTML = sample.map(row=>
+    `<tr>${row.map(c=>`<td>${c}</td>`).join('')}</tr>`
+  ).join('');
+  document.getElementById('fr-report').classList.remove('report-hidden');
+}
+
+/* --- تقرير شهري لصيانة المحابس --- */
+function genValvesMonthly(){
+  const from = document.getElementById('vm-from').value;
+  const to = document.getElementById('vm-to').value;
+  if(!from || !to){ alert('يرجى تحديد الفترة من وإلى أولًا'); return; }
+  document.getElementById('vm-range').textContent = `الفترة من ${fmtDate(from)} إلى ${fmtDate(to)}`;
+
+  const sample = [
+    ['VLV-2210','صلب4بوصة','دورية','—',from,'فحص وتشحيم',to,'—'],
+    ['VLV-1187','بولي تك','طارئة','تسريب بمدخل المحبس',from,'إصلاح التسريب',to,'تم الإصلاح'],
+  ];
+  document.getElementById('vm-tbody').innerHTML = sample.map(row=>
+    `<tr>${row.map(c=>`<td>${c}</td>`).join('')}</tr>`
+  ).join('');
+  document.getElementById('vm-report').classList.remove('report-hidden');
+}
+
+/* --- تقرير شهري لمتابعة أعمال الصيانة بالمنظمات --- */
+function genWorkReport(){
+  const from = document.getElementById('wr-from').value;
+  const to = document.getElementById('wr-to').value;
+  if(!from || !to){ alert('يرجى تحديد الفترة من وإلى أولًا'); return; }
+  document.getElementById('wr-range').textContent = `الفترة من ${fmtDate(from)} إلى ${fmtDate(to)}`;
+
+  const sample = [
+    ['REG-1042','1000','LOOP','دورية','إعادة ضبط',from,'تم إعادة ضبط',to,'لا يوجد ملاحظات'],
+    ['REG-0731','5000','LEG','طارئة','مؤشر عداد الفلتر به قراءة',from,'تنظيف فلتر + قراءة حماية كاثودية',to,'تم الإصلاح بنجاح'],
+  ];
+  document.getElementById('wr-tbody').innerHTML = sample.map(row=>
+    `<tr>${row.map(c=>`<td>${c}</td>`).join('')}</tr>`
+  ).join('');
+  document.getElementById('wr-report').classList.remove('report-hidden');
+}
+
+let currentPage = 'home';
+/* ============ متابعة الصيانة الوقائية: بيانات العمارات (من excel) ============ */
+/* القطاعات المسجلة: 11/25/23 - 11/25/25 - 11/33/26 - 11/33/27 - 11/33/29 */
+const pmSectorData = {
+  '11__33__27': [["01","02"],["01","03"],["01","04"],["01","05"],["01","06"],["01","07"],["01","08"],["01","09"],["01","10"],["01","11"],["01","12"],["01","13"],["01","14"],["01","16"],["01","17"],["01","18"],["01","19"],["01","21"],["01","22"],["01","23"],["01","24"],["01","25"],["01","26"],["01","27"],["01","29"],["01","30"],["01","31"],["01","34"],["01","35"],["01","37"],["01","38"],["01","39"],["01","40"],["01","41"],["01","42"],["01","44"],["01","47"],["01","48"],["01","49"],["01","51"],["01","52"],["01","54"],["01","54"],["01","55"],["01","56"],["01","57"],["01","58"],["01","60"],["01","62"],["01","63"],["02","01"],["02","02"],["02","03"],["02","05"],["02","08"],["02","09"],["02","10"],["02","11"],["02","12"],["02","13"],["02","14"],["02","15"],["02","16"],["02","19"],["02","21"],["02","22"],["02","23"],["02","25"],["02","26"],["02","27"],["02","28"],["02","29"],["02","30"],["02","31"],["02","32"],["02","33"],["02","34"],["02","35"],["02","37"],["02","38"],["02","39"],["02","40"],["02","41"],["03","01"],["03","02"],["03","03"],["03","04"],["03","05"],["03","06"],["03","07"],["03","08"],["03","09"],["03","10"],["03","11"],["03","12"],["03","13"],["03","14"],["03","15"],["03","16"],["03","17"],["03","19"],["03","20"],["03","21"],["03","22"],["03","23"],["03","24"],["03","25"],["03","26"],["03","28"],["03","29"],["03","30"],["03","31"],["04","01"],["04","02"],["04","03"],["04","04"],["04","06"],["04","08"],["04","10"],["04","11"],["04","12"],["04","13"],["04","14"],["04","15"],["04","16"],["04","18"],["04","20"],["04","21"],["04","22"],["04","23"],["04","25"],["04","26"],["04","27"],["04","29"],["04","30"],["04","31"],["04","32"],["04","33"],["04","35"],["04","37"],["04","38"],["05","01"],["05","04"],["05","05"],["05","06"],["05","06"],["05","07"],["05","08"],["05","09"],["05","10"],["05","11"],["05","12"],["05","13"],["05","14"],["05","15"],["05","16"],["05","17"],["05","19"],["05","20"],["05","21"],["05","22"],["05","23"],["05","24"],["05","25"],["05","27"],["05","27"],["05","28"],["05","29"],["05","30"],["05","31"],["05","33"],["05","34"],["05","35"],["05","36"],["05","38"],["05","39"],["05","40"],["05","41"],["05","43"],["05","44"],["05","47"],["05","49"],["05","50"],["05","52"],["05","53"],["05","54"],["05","55"],["05","57"],["05","59"],["05","60"],["05","61"],["05","62"],["05","63"],["05","64"],["05","65"],["05","68"],["05","69"],["05","70"],["05","71"],["05","72"],["05","73"],["05","74"],["05","75"],["05","76"],["05","77"],["05","78"],["05","79"],["05","81"],["05","82"],["05","83"],["05","84"],["05","85"],["05","86"],["05","87"],["05","88"],["05","89"],["05","90"],["06","01"],["06","02"],["06","03"],["06","04"],["06","05"],["06","06"],["06","08"],["06","09"],["06","10"],["06","12"],["06","14"],["06","15"],["06","16"],["06","17"],["06","18"],["06","19"],["06","20"],["06","22"],["06","23"],["06","24"],["06","25"],["06","26"],["06","27"],["06","28"],["06","30"],["06","31"],["06","33"],["06","34"],["06","35"],["06","36"],["06","41"],["06","42"],["06","43"],["06","45"],["06","46"],["06","47"],["06","48"],["06","49"],["06","50"],["06","51"],["06","52"],["06","53"],["06","54"],["06","55"],["06","56"],["06","57"],["06","58"],["06","59"],["06","60"],["06","61"],["06","63"],["06","65"],["06","66"],["06","67"],["06","68"],["06","69"],["06","70"],["06","71"],["06","72"],["06","73"],["06","75"],["06","76"],["07","01"],["07","02"],["07","03"],["07","05"],["07","06"],["07","07"],["07","08"],["07","10"],["07","11"],["07","12"],["07","13"],["07","14"],["07","15"],["07","16"],["07","18"],["07","19"],["07","20"],["07","21"],["07","22"],["07","23"],["07","25"],["07","26"],["07","27"],["07","28"],["07","29"],["07","30"],["07","31"],["07","32"],["07","34"],["07","35"],["07","36"],["07","37"],["07","37"],["07","39"],["07","40"],["07","41"],["07","42"],["07","43"],["07","45"],["07","46"],["07","47"],["07","48"],["07","49"],["07","50"],["07","51"],["07","52"],["08","01"],["08","02"],["08","03"],["08","04"],["08","05"],["08","06"],["08","07"],["08","09"],["08","10"],["08","11"],["08","12"],["08","13"],["08","14"],["08","15"],["08","16"],["08","17"],["08","19"],["08","20"],["08","22"],["08","23"],["08","24"],["08","25"],["08","26"],["08","27"],["08","29"],["08","30"],["08","31"],["08","32"],["08","33"],["08","34"],["08","35"],["08","36"],["08","37"],["08","40"],["08","41"],["08","42"],["08","43"],["09","02"],["09","03"],["09","04"],["09","05"],["09","06"],["09","07"],["09","08"],["09","09"],["09","10"],["09","11"],["09","13"],["09","14"],["09","16"],["09","17"],["09","18"],["09","19"],["09","20"],["09","21"],["09","23"],["09","24"],["09","25"],["09","26"],["09","27"],["09","28"],["09","29"],["09","30"],["09","31"],["09","33"],["09","34"],["09","35"],["09","37"],["09","39"],["09","40"],["10","02"],["10","03"],["10","04"],["10","05"],["10","07"],["10","08"],["10","14"],["10","16"],["10","17"],["10","18"],["10","19"],["10","20"],["10","21"],["10","22"],["10","23"],["10","24"],["10","25"],["10","27"],["10","28"],["10","29"],["10","34"],["10","35"],["10","36"],["10","37"],["10","38"],["10","39"],["10","40"],["11","01"],["11","02"],["11","03"],["11","04"],["11","05"],["11","07"],["11","08"],["11","09"],["11","10"],["11","11"],["12","01"],["12","03"],["12","04"],["12","06"],["12","07"],["12","09"],["12","10"],["12","11"],["12","13"],["12","14"],["12","15"],["12","16"],["12","17"],["12","22"],["12","23"],["12","24"],["12","25"],["12","25"],["12","26"],["12","27"],["12","28"],["12","29"],["12","30"],["12","31"],["12","32"],["12","33"],["12","34"],["12","36"],["12","39"],["12","40"],["12","41"],["12","42"],["12","43"],["12","44"],["12","45"],["12","46"],["12","49"],["12","50"],["12","51"],["12","52"],["12","54"],["13","01"],["13","02"],["13","03"],["13","06"],["13","07"],["13","08"],["13","09"],["13","10"],["13","11"],["13","14"],["13","15"],["13","16"],["13","18"],["13","19"],["13","20"],["13","21"],["13","22"],["13","23"],["13","24"],["13","26"],["13","28"],["13","29"],["13","31"],["13","31"],["13","32"],["13","33"],["13","34"],["13","35"],["13","36"],["13","37"],["13","38"],["13","43"],["13","44"],["13","45"],["13","46"],["13","50"],["13","51"],["13","52"],["14","03"],["14","05"],["14","06"],["14","09"],["14","10"],["14","10"],["14","11"],["14","13"],["14","14"],["14","15"],["14","16"],["14","17"],["14","20"],["14","22"],["14","24"],["14","25"],["14","26"],["14","27"],["14","28"],["14","29"],["14","30"],["14","31"],["14","32"],["14","33"],["14","34"],["14","36"],["14","37"],["14","39"],["14","41"],["14","43"],["14","44"],["15","01"],["15","02"],["15","04"],["15","08"],["15","09"],["15","10"],["15","11"],["15","13"],["15","14"],["15","15"],["15","16"],["15","17"],["15","18"],["15","20"],["15","21"],["15","22"],["15","24"],["15","25"],["15","27"],["15","28"],["15","32"],["15","33"],["15","34"],["15","35"],["15","38"],["15","40"],["15","42"],["15","48"],["16","02"],["16","03"],["16","05"],["16","06"],["16","07"],["16","08"],["16","10"],["16","12"],["16","14"],["16","15"],["16","16"],["16","17"],["16","19"],["16","20"],["16","22"],["16","23"],["16","24"],["16","27"],["16","28"],["16","29"],["16","30"],["16","31"],["16","35"],["16","36"],["16","37"],["16","38"],["16","39"],["16","40"],["16","41"],["16","42"],["16","43"],["16","45"],["16","46"],["16","49"],["16","50"],["16","51"],["16","52"],["16","54"],["16","55"],["16","56"],["16","58"],["16","59"],["16","60"],["16","61"],["16","62"],["16","63"],["16","64"],["16","65"],["16","66"],["16","67"],["16","68"],["16","69"],["16","70"],["16","71"],["16","72"],["16","73"],["16","73"],["16","74"],["16","76"],["16","77"],["16","78"],["16","79"],["16","80"],["16","81"],["16","82"],["16","84"],["17","01"],["17","02"],["17","03"],["17","04"],["17","05"],["17","06"],["17","07"],["17","09"],["17","13"],["17","14"],["17","15"],["17","16"],["17","16"],["17","18"],["17","19"],["17","20"],["17","21"],["17","22"],["17","23"],["17","24"],["17","25"],["17","26"],["18","01"],["18","02"],["18","03"],["18","05"],["18","07"],["18","11"],["18","12"],["18","13"],["18","14"],["18","15"],["18","16"],["18","19"],["18","20"],["18","21"],["18","24"],["18","25"],["18","26"],["18","27"],["18","28"],["18","29"],["18","31"],["18","32"],["18","33"],["18","35"],["18","36"],["18","37"],["18","38"],["18","39"],["18","40"],["19","01"],["19","02"],["19","03"],["19","04"],["19","05"],["19","06"],["19","07"],["19","08"],["19","10"],["19","11"],["19","12"],["19","13"],["19","14"],["19","15"],["19","16"],["19","18"],["20","01"],["20","03"],["20","04"],["20","05"],["20","06"],["20","07"],["20","08"],["20","09"],["20","12"],["20","13"],["20","14"],["20","15"],["20","16"],["20","17"],["20","18"],["20","19"],["20","20"],["20","21"],["20","22"],["20","23"],["21","03"],["21","04"],["21","05"],["21","06"],["21","07"],["21","08"],["21","09"],["21","10"],["21","11"],["21","12"],["21","13"],["21","14"],["21","15"],["21","17"],["21","18"],["21","19"],["21","20"],["21","21"],["21","22"],["21","23"],["21","25"],["21","26"],["21","27"],["22","02"],["22","04"],["22","05"],["22","06"],["22","07"],["22","08"],["22","10"],["22","11"],["22","12"],["22","13"],["22","14"],["22","15"],["22","16"],["22","17"],["22","17"],["22","18"],["22","19"],["22","20"],["22","22"],["22","23"],["22","24"],["22","25"],["22","26"],["22","27"],["22","28"],["22","29"],["22","32"],["22","33"],["22","34"],["22","35"],["23","01"],["23","02"],["23","03"],["23","04"],["23","05"],["23","06"],["23","07"],["23","08"],["23","09"],["23","10"],["23","11"],["23","12"],["23","13"],["23","14"],["23","15"],["23","17"],["23","18"],["23","19"],["23","20"],["23","21"],["23","22"],["23","23"],["23","24"],["23","25"],["23","26"],["23","29"],["23","30"],["23","31"],["23","32"],["23","33"],["23","34"],["24","02"],["24","03"],["24","04"],["24","05"],["24","06"],["24","07"],["24","08"],["24","09"],["24","10"],["24","11"],["24","12"],["24","13"],["24","14"],["24","15"],["24","16"],["24","17"],["24","18"],["24","21"],["24","22"],["24","24"],["24","26"],["24","27"],["24","29"],["24","30"],["24","32"],["24","33"],["24","34"],["24","35"],["24","37"],["25","01"],["25","03"],["25","04"],["25","05"],["25","06"],["25","07"],["25","08"],["25","09"],["25","10"],["25","11"],["25","13"],["25","14"],["25","15"],["25","17"],["25","18"],["25","19"],["25","22"],["25","29"],["26","01"],["26","02"],["26","13"],["26","14"],["26","15"],["26","16"],["26","17"],["26","19"],["26","20"],["26","21"],["26","22"],["26","23"],["26","25"],["26","26"],["26","27"],["26","28"],["26","29"],["26","43"],["26","44"],["26","45"],["26","46"],["26","47"],["26","49"],["26","50"],["26","51"],["27","01"],["27","04"],["27","07"],["27","08"],["27","19"],["28","02"],["28","04"],["28","05"],["28","06"],["28","08"],["28","09"],["28","10"],["28","11"],["28","13"],["28","14"],["28","16"],["28","17"],["28","18"],["29","01"],["29","01"],["29","02"],["29","03"],["29","05"],["29","10"],["29","11"],["29","12"],["29","13"],["30","01"],["30","02"],["30","25"],["31","01"],["31","05"],["31","07"],["31","08"],["31","10"],["31","12"],["31","13"],["31","15"],["31","16"],["31","18"],["31","19"],["31","20"],["31","21"],["31","22"],["31","23"],["31","24"],["32","01"],["32","03"],["32","04"],["32","05"],["32","06"],["32","07"],["32","08"],["32","10"],["32","12"],["32","18"],["32","19"],["32","20"],["32","20"],["32","22"],["32","23"],["32","29"],["32","35"],["32","37"],["32","39"],["32","40"],["32","41"],["32","42"],["33","02"],["33","04"],["33","06"],["33","07"],["33","08"],["34","10"],["34","15"],["35","01"],["35","02"],["35","08"],["35","09"],["35","10"],["35","11"],["35","11"],["35","12"],["35","13"],["35","14"],["35","17"],["35","18"],["35","20"],["35","21"],["35","22"],["35","23"],["35","24"],["35","25"],["35","26"],["36","01"],["36","02"],["36","03"],["36","05"],["36","06"],["36","07"],["36","08"],["36","09"],["36","10"],["36","11"],["36","13"],["36","14"],["36","15"],["36","19"],["36","21"],["36","22"],["36","23"],["36","24"],["36","26"],["36","27"],["36","33"],["36","33"],["36","34"],["36","36"],["36","38"],["36","40"],["36","46"],["36","47"],["36","48"],["36","49"],["36","50"],["36","51"],["36","52"],["36","54"],["36","55"],["36","58"],["36","59"],["36","60"],["37","01"],["37","02"],["37","05"],["37","29"],["37","30"],["37","31"],["37","32"],["37","34"],["37","35"],["37","38"],["37","40"],["37","41"],["37","42"],["37","43"],["37","44"],["37","47"],["37","48"],["37","52"],["37","53"],["37","54"],["37","55"],["37","56"],["37","57"],["38","01"],["38","02"],["38","04"],["38","06"],["38","08"],["38","10"],["38","11"],["38","12"],["38","13"],["38","14"],["38","16"],["38","17"],["38","20"],["38","25"],["38","26"],["38","48"],["38","48"],["39","03"],["39","05"],["39","06"],["39","07"],["39","14"],["39","16"],["39","17"],["39","20"],["39","21"],["39","22"],["39","24"],["39","28"],["40","01"],["40","02"],["40","05"],["40","06"],["40","09"],["40","10"],["40","12"],["40","13"],["40","14"],["40","15"],["40","19"],["40","22"],["40","23"],["40","25"],["40","26"],["40","27"],["40","28"],["40","29"],["40","30"],["40","31"],["40","33"],["41","02"],["41","03"],["41","04"],["41","05"],["41","06"],["41","09"],["41","11"],["41","12"],["41","13"],["41","14"],["41","15"],["41","19"],["41","20"],["41","21"],["41","23"],["41","24"],["41","26"],["41","27"],["41","29"],["42","02"],["42","03"],["42","04"],["42","04"],["42","05"],["42","06"],["42","08"],["42","09"],["42","11"],["42","12"],["42","18"],["42","20"],["42","34"],["42","35"],["42","36"],["42","38"],["42","39"],["42","40"],["42","41"],["42","42"],["42","43"],["42","44"],["42","45"],["42","46"],["42","47"],["42","48"],["43","01"],["43","02"],["43","03"],["43","04"],["43","05"],["43","06"],["43","07"],["43","09"],["43","10"],["43","11"],["43","12"],["43","13"],["43","14"],["43","15"],["43","16"],["43","17"],["43","18"],["43","19"],["43","20"],["43","21"],["43","22"],["43","23"],["43","24"],["43","25"],["43","26"],["43","27"],["43","28"],["43","29"],["43","30"],["43","30"],["43","31"],["43","32"],["43","33"],["43","34"],["43","35"],["43","35"],["43","36"],["43","37"],["43","40"],["43","41"],["43","42"],["43","43"],["43","44"],["43","44"],["43","44"],["43","44"],["43","45"],["43","46"],["43","47"],["43","48"],["44","01"],["44","02"],["44","02"],["44","03"],["44","04"],["44","05"],["44","06"],["44","07"],["44","08"],["44","09"],["44","13"],["44","16"],["44","18"],["44","19"],["44","20"],["44","23"],["44","24"],["44","25"],["44","26"],["44","27"],["44","28"],["44","29"],["44","30"],["44","31"],["44","32"],["44","34"],["44","35"],["44","36"],["44","37"],["44","38"],["44","39"],["44","40"],["44","45"],["44","46"],["44","47"],["44","48"],["44","51"],["44","53"],["44","54"],["44","55"],["44","56"],["44","58"],["44","59"],["44","60"],["44","61"],["44","62"],["44","63"],["44","64"],["44","65"],["44","66"],["45","01"],["45","08"],["45","09"],["45","10"],["45","12"],["45","13"],["45","15"],["45","16"],["45","17"],["45","18"],["45","20"],["45","21"],["45","22"],["45","23"],["45","24"],["45","25"],["45","26"],["45","27"],["45","28"],["45","29"],["45","32"],["45","37"],["46","01"],["46","02"],["46","06"],["46","07"],["46","09"],["46","10"],["46","12"],["46","15"],["46","18"],["46","19"],["46","20"],["46","21"],["46","22"],["46","23"],["46","24"],["46","25"],["46","26"],["46","27"],["46","28"],["46","29"],["46","30"],["46","31"],["46","31"],["46","32"],["46","33"],["46","34"],["46","35"],["46","36"],["46","37"],["46","41"],["46","42"],["46","44"],["46","45"],["46","46"],["46","47"],["47","02"],["47","03"],["47","04"],["47","05"],["47","06"],["47","07"],["47","09"],["47","10"],["47","13"],["47","15"],["47","18"],["47","20"],["47","21"],["47","22"],["47","23"],["47","24"],["47","25"],["47","27"],["47","28"],["47","29"],["47","30"],["47","31"],["47","32"],["47","33"],["47","34"],["47","35"],["47","37"],["47","38"],["47","39"],["47","40"],["47","41"],["47","42"],["47","45"],["47","46"],["47","50"],["47","51"],["47","53"],["47","54"],["48","02"],["48","03"],["48","04"],["48","05"],["48","06"],["48","07"],["48","08"],["48","09"],["48","10"],["48","11"],["48","12"],["48","13"],["48","14"],["48","15"],["48","16"],["48","17"],["48","18"],["48","19"],["48","20"],["48","21"],["48","22"],["48","23"],["48","24"],["48","25"],["48","26"],["49","07"],["49","09"],["49","12"],["49","12"],["49","13"],["51","01"],["51","02"],["51","03"],["51","04"],["51","05"],["51","06"],["51","08"],["51","10"],["51","12"],["51","13"],["51","14"],["51","15"],["51","16"],["51","17"],["51","18"],["51","19"],["51","20"],["51","21"],["51","22"],["51","39"],["54","02"],["54","03"],["54","04"],["54","05"],["54","07"],["54","08"],["54","09"],["54","11"],["54","13"],["54","15"],["54","20"],["54","21"],["54","24"],["54","27"],["54","28"],["54","31"],["54","39"],["54","40"],["54","41"],["54","43"],["54","44"],["54","45"],["54","46"],["54","47"],["55","08"],["55","09"],["55","10"],["55","11"],["55","12"],["55","13"],["55","14"],["55","15"],["55","16"],["55","20"],["55","21"],["55","22"],["55","23"],["55","24"],["55","26"],["55","27"],["55","28"],["55","29"],["55","30"],["55","31"],["55","33"],["55","35"],["55","41"],["55","46"],["55","48"],["55","49"],["55","52"],["55","53"],["55","56"],["56","02"],["56","03"],["56","05"],["56","06"],["56","07"],["56","08"],["56","10"],["56","11"],["56","12"],["56","13"],["56","14"],["56","16"],["56","17"],["56","18"],["56","19"],["56","20"],["56","21"],["56","22"],["56","23"],["56","24"],["56","46"],["57","03"],["57","04"],["57","06"],["57","07"],["57","08"],["57","09"],["57","10"],["57","12"],["57","13"],["57","15"],["57","16"],["57","18"],["57","23"],["57","24"],["57","25"],["57","26"],["57","27"],["57","28"],["57","29"],["57","30"],["57","31"],["57","33"],["57","34"],["57","35"],["57","36"],["57","37"],["57","38"],["57","39"],["57","40"],["57","41"],["57","42"],["57","43"],["57","44"],["57","45"],["57","46"],["57","47"],["57","48"],["57","49"],["57","50"],["57","51"],["57","52"],["57","55"],["57","56"],["57","57"],["57","59"],["57","60"],["57","61"],["57","62"],["57","63"],["57","64"],["57","67"],["58","06"],["58","07"],["58","11"],["58","12"],["58","13"],["58","14"],["58","15"],["58","18"],["58","20"],["58","22"],["58","24"],["58","25"],["58","26"],["58","28"],["58","32"],["58","34"],["58","36"],["58","38"],["58","39"],["58","40"],["58","41"],["58","42"],["58","43"],["59","02"],["59","02"],["59","03"],["59","04"],["59","06"],["59","07"],["59","08"],["59","09"],["59","11"],["59","13"],["60","01"],["60","02"],["60","03"],["60","04"],["60","05"],["60","06"],["60","07"],["60","08"],["60","09"],["60","10"],["60","11"],["60","12"],["60","13"],["60","14"],["60","15"],["60","16"],["60","17"],["60","18"],["60","20"],["60","21"],["60","22"],["60","23"],["60","26"],["60","27"],["60","28"],["60","29"],["60","32"],["60","34"],["60","36"],["61","01"],["61","03"],["61","05"],["61","06"],["61","07"],["61","09"],["61","10"],["61","11"],["61","12"],["61","13"],["61","14"],["61","16"],["61","17"],["62","01"],["62","02"],["62","04"],["62","05"],["62","06"],["62","07"],["62","08"],["62","09"],["62","10"],["62","11"],["62","12"],["62","13"],["62","14"],["62","15"],["62","16"],["62","17"],["62","18"],["62","19"],["62","20"],["62","21"],["62","23"],["62","24"],["62","25"],["62","26"],["62","27"],["62","28"],["62","29"],["62","30"],["62","31"],["62","32"],["62","32"],["62","33"],["62","35"],["62","36"],["62","37"],["62","38"],["62","39"],["63","02"],["63","03"],["63","04"],["63","06"],["63","07"],["63","08"],["63","09"],["63","10"],["63","11"],["63","12"],["63","13"],["63","14"],["63","15"],["63","16"],["64","01"],["64","03"],["64","04"],["64","05"],["64","07"],["64","08"],["64","13"],["64","14"],["64","16"],["64","17"],["64","18"],["64","19"],["64","20"],["64","22"],["64","24"],["64","25"],["64","26"],["64","27"],["64","28"],["64","29"],["64","30"],["64","31"],["64","32"],["64","33"],["64","34"],["64","35"],["64","36"],["64","37"],["64","38"],["64","39"],["64","40"],["64","41"],["64","43"],["64","44"],["64","45"],["64","46"],["64","49"],["65","01"],["65","02"],["65","03"],["65","05"],["65","06"],["65","08"],["65","10"],["65","11"],["65","12"],["65","13"],["65","16"],["65","17"],["65","19"],["65","21"],["65","22"],["65","24"],["65","25"],["65","26"],["65","27"],["65","28"],["65","29"],["65","31"],["65","35"],["65","36"],["65","36"],["65","38"],["65","39"],["65","40"],["65","42"],["65","43"],["65","45"],["65","46"],["65","47"],["65","48"],["65","49"],["65","50"],["65","51"],["65","52"],["65","55"],["65","57"],["65","58"],["65","59"],["65","60"],["65","61"],["65","64"],["65","65"],["65","67"],["65","69"],["65","70"],["65","71"],["66","01"],["66","01"],["66","02"],["66","03"],["66","05"],["66","06"],["66","07"],["66","09"],["66","13"],["66","15"],["66","20"],["66","20"],["66","21"],["66","24"],["66","31"],["66","33"],["66","34"],["66","36"],["66","37"],["66","38"],["66","39"],["66","40"],["66","41"],["66","42"],["66","44"],["66","45"],["66","46"],["66","48"],["66","49"],["66","50"],["66","51"],["67","01"],["67","02"],["67","03"],["67","04"],["67","05"],["67","06"],["67","08"],["67","09"],["67","10"],["67","11"],["67","12"],["67","13"],["67","14"],["67","15"],["67","16"],["67","17"],["67","18"],["67","20"],["67","21"],["67","22"],["67","23"],["67","25"],["67","26"],["67","27"],["68","02"],["68","04"],["68","05"],["68","06"],["68","08"],["68","09"],["68","10"],["68","14"],["68","15"],["68","17"],["68","18"],["68","19"],["68","20"],["68","21"],["68","23"],["68","24"],["68","25"],["68","26"],["68","27"],["68","28"],["68","29"],["68","30"],["68","31"],["68","32"],["68","33"],["68","34"],["68","35"],["68","36"],["68","37"],["68","38"],["68","39"],["68","40"],["68","41"],["68","42"],["68","44"],["68","45"],["69","01"],["69","03"],["69","04"],["69","05"],["69","07"],["69","08"],["69","09"],["69","10"],["69","11"],["69","12"],["69","13"],["69","14"],["69","15"],["69","17"],["69","18"],["69","20"],["69","21"],["69","22"],["69","23"],["69","24"],["69","25"],["69","26"],["69","27"],["69","28"],["69","29"],["69","30"],["69","31"],["69","32"],["69","33"],["69","34"],["69","35"],["69","36"],["69","37"],["69","39"],["69","42"],["69","43"],["69","44"],["69","45"],["69","46"],["69","47"],["69","48"],["69","51"],["69","52"],["69","53"],["69","54"],["69","56"],["69","57"],["69","62"],["70","01"],["70","02"],["70","03"],["70","04"],["70","06"],["70","08"],["70","09"],["70","10"],["70","11"],["70","12"],["70","13"],["70","15"],["70","16"],["70","16"],["70","18"],["70","19"],["70","20"],["70","21"],["70","22"],["70","23"],["70","26"],["70","28"],["70","29"],["70","30"],["70","31"],["70","32"],["70","33"],["70","34"],["70","36"],["70","37"],["70","38"],["70","39"],["70","40"],["70","41"],["70","42"],["70","43"],["70","44"],["70","45"],["70","46"],["70","47"],["70","49"],["70","50"],["70","54"],["70","55"],["70","56"],["70","57"],["70","58"],["70","59"],["70","61"],["70","62"],["70","63"],["70","64"],["70","65"]],
+  '11__33__26': [["01","01"],["01","02"],["01","03"],["01","04"],["01","06"],["01","11"],["01","14"],["01","15"],["01","16"],["01","17"],["01","18"],["01","19"],["01","20"],["01","21"],["01","22"],["01","23"],["01","24"],["01","25"],["02","01"],["02","02"],["02","04"],["02","05"],["02","06"],["02","07"],["02","08"],["02","09"],["02","10"],["02","11"],["02","12"],["02","19"],["02","20"],["02","21"],["02","22"],["02","23"],["02","24"],["02","24"],["02","25"],["02","26"],["02","27"],["02","28"],["02","28"],["03","02"],["03","03"],["03","04"],["03","05"],["03","06"],["03","07"],["03","08"],["03","09"],["03","10"],["03","11"],["03","13"],["03","15"],["03","17"],["03","19"],["03","22"],["03","23"],["03","24"],["03","25"],["03","26"],["03","27"],["03","28"],["03","29"],["03","30"],["03","31"],["03","32"],["03","33"],["03","34"],["03","36"],["03","37"],["03","38"],["03","39"],["03","40"],["03","41"],["03","42"],["04","01"],["04","02"],["04","03"],["04","04"],["04","06"],["04","07"],["04","08"],["04","09"],["04","10"],["04","11"],["04","12"],["04","13"],["04","14"],["04","15"],["04","16"],["04","17"],["04","18"],["04","19"],["04","21"],["04","22"],["04","23"],["04","25"],["04","26"],["04","28"],["04","29"],["04","30"],["04","31"],["04","32"],["04","33"],["04","34"],["04","35"],["04","36"],["04","37"],["04","38"],["04","39"],["04","40"],["04","41"],["04","42"],["04","43"],["04","44"],["04","46"],["04","49"],["04","50"],["04","51"],["04","52"],["04","53"],["04","55"],["04","56"],["04","57"],["04","58"],["04","59"],["04","60"],["04","61"],["04","62"],["04","64"],["04","66"],["04","67"],["04","69"],["04","71"],["05","01"],["05","02"],["05","03"],["05","04"],["05","04"],["05","05"],["05","06"],["05","09"],["05","11"],["05","12"],["05","13"],["05","14"],["05","15"],["05","17"],["05","18"],["05","19"],["05","20"],["05","21"],["05","22"],["05","22"],["05","23"],["05","24"],["05","25"],["05","26"],["05","27"],["05","28"],["05","29"],["05","30"],["05","31"],["05","32"],["05","33"],["05","34"],["05","35"],["05","36"],["05","37"],["05","38"],["06","01"],["06","02"],["06","04"],["06","05"],["06","06"],["06","07"],["06","08"],["06","09"],["06","10"],["06","11"],["06","13"],["06","14"],["06","15"],["06","16"],["06","17"],["06","18"],["06","19"],["06","20"],["06","21"],["06","22"],["06","23"],["06","24"],["06","25"],["06","26"],["06","27"],["06","31"],["07","03"],["07","04"],["07","05"],["07","06"],["07","08"],["07","09"],["07","12"],["07","15"],["07","16"],["07","19"],["07","20"],["07","21"],["07","24"],["07","25"],["07","26"],["07","27"],["07","28"],["07","29"],["07","30"],["07","31"],["07","33"],["07","35"],["07","36"],["07","38"],["08","02"],["08","04"],["08","05"],["08","06"],["08","07"],["08","08"],["08","09"],["08","10"],["08","12"],["08","14"],["08","15"],["08","16"],["08","17"],["08","18"],["08","19"],["08","21"],["08","22"],["08","23"],["08","24"],["08","25"],["08","26"],["08","27"],["08","28"],["08","29"],["08","31"],["08","32"],["08","33"],["08","34"],["08","37"],["08","38"],["08","39"],["08","40"],["08","42"],["08","43"],["08","44"],["08","45"],["08","47"],["08","48"],["08","49"],["08","51"],["08","53"],["08","54"],["08","55"],["08","56"],["08","57"],["08","58"],["08","59"],["08","59"],["08","62"],["08","63"],["08","64"],["08","65"],["08","66"],["08","67"],["08","68"],["08","69"],["08","70"],["08","71"],["08","72"],["08","73"],["08","74"],["08","75"],["08","76"],["09","01"],["09","02"],["09","03"],["09","05"],["09","07"],["09","08"],["09","09"],["09","10"],["09","11"],["09","13"],["09","14"],["09","16"],["09","17"],["09","18"],["09","19"],["09","20"],["09","21"],["09","21"],["09","22"],["09","23"],["09","24"],["09","25"],["09","28"],["09","29"],["09","30"],["09","31"],["09","33"],["09","35"],["09","36"],["09","37"],["09","38"],["10","01"],["10","04"],["10","05"],["10","05"],["10","06"],["10","07"],["10","09"],["10","10"],["10","11"],["10","15"],["10","17"],["10","18"],["10","19"],["10","20"],["10","21"],["10","22"],["10","23"],["10","24"],["10","27"],["10","28"],["10","29"],["10","30"],["10","31"],["10","32"],["10","34"],["10","35"],["11","01"],["11","02"],["11","04"],["11","06"],["11","07"],["11","09"],["11","10"],["11","11"],["11","12"],["11","13"],["11","14"],["11","15"],["11","16"],["11","18"],["11","19"],["11","20"],["11","21"],["11","22"],["11","23"],["11","24"],["11","26"],["12","01"],["12","01"],["12","02"],["12","03"],["12","04"],["12","05"],["12","06"],["12","07"],["12","08"],["12","09"],["12","10"],["12","16"],["12","17"],["12","18"],["12","19"],["12","20"],["12","22"],["12","23"],["12","24"],["12","25"],["12","26"],["12","27"],["13","01"],["13","01"],["13","02"],["13","03"],["13","04"],["13","06"],["13","07"],["13","08"],["13","09"],["13","10"],["13","11"],["13","12"],["13","13"],["13","14"],["13","15"],["13","16"],["13","17"],["13","18"],["13","22"],["13","23"],["13","24"],["14","02"],["14","03"],["14","04"],["14","05"],["14","06"],["14","07"],["14","09"],["14","10"],["14","12"],["14","13"],["14","14"],["14","15"],["14","16"],["14","17"],["14","18"],["14","19"],["14","21"],["14","22"],["14","23"],["14","24"],["14","25"],["14","26"],["14","26"],["15","01"],["15","02"],["15","03"],["15","05"],["15","06"],["15","07"],["15","08"],["15","09"],["15","10"],["15","11"],["15","12"],["15","14"],["15","15"],["15","16"],["15","17"],["15","19"],["15","20"],["15","21"],["15","22"],["15","23"],["15","24"],["15","29"],["15","30"],["15","31"],["15","32"],["15","33"],["16","01"],["16","02"],["16","03"],["16","06"],["16","07"],["16","08"],["16","09"],["16","10"],["16","11"],["16","12"],["16","13"],["16","14"],["16","15"],["16","16"],["16","17"],["16","18"],["16","19"],["16","20"],["16","21"],["16","22"],["16","24"],["16","25"],["16","26"],["16","27"],["16","28"],["16","29"],["16","32"],["16","34"],["16","35"],["16","36"],["16","37"],["16","38"],["17","02"],["17","03"],["17","05"],["17","06"],["17","07"],["17","08"],["17","09"],["17","10"],["17","12"],["17","12"],["17","13"],["17","14"],["17","14"],["17","15"],["17","16"],["17","17"],["17","18"],["17","19"],["17","21"],["17","22"],["17","23"],["17","25"],["17","28"],["17","29"],["17","30"],["17","31"],["17","32"],["17","33"],["17","33"],["17","34"],["17","35"],["17","36"],["17","37"],["17","39"],["17","40"],["17","41"],["17","42"],["17","43"],["17","44"],["17","48"],["17","49"],["17","50"],["17","51"],["17","52"],["17","54"],["17","55"],["17","56"],["17","57"],["17","58"],["17","59"],["17","61"],["18","02"],["18","03"],["18","04"],["18","05"],["18","06"],["18","07"],["18","09"],["18","10"],["18","12"],["18","13"],["18","14"],["18","15"],["18","16"],["18","17"],["18","18"],["18","19"],["18","20"],["18","22"],["18","23"],["18","24"],["18","25"],["18","26"],["18","27"],["18","27"],["18","28"],["18","29"],["18","30"],["18","31"],["18","32"],["18","33"],["18","35"],["18","36"],["18","37"],["18","38"],["18","39"],["18","40"],["18","41"],["18","42"],["18","43"],["18","45"],["18","49"],["18","50"],["18","51"],["18","52"],["18","53"],["18","54"],["18","55"],["18","56"],["18","57"],["18","58"],["18","59"],["18","60"],["18","61"],["18","62"],["18","63"],["18","64"],["18","65"],["18","66"],["18","67"],["18","68"],["18","70"],["18","71"],["18","72"],["18","72"],["19","01"],["19","02"],["19","05"],["19","06"],["19","07"],["19","08"],["19","09"],["19","10"],["19","11"],["19","12"],["19","13"],["19","14"],["19","15"],["19","16"],["19","18"],["19","19"],["19","20"],["19","21"],["19","22"],["19","23"],["19","25"],["19","26"],["19","27"],["19","28"],["19","29"],["19","30"],["19","31"],["19","34"],["19","35"],["19","36"],["19","37"],["19","38"],["19","39"],["19","41"],["19","42"],["19","47"],["19","48"],["19","49"],["19","50"],["19","51"],["19","53"],["19","55"],["19","57"],["19","58"],["19","59"],["19","60"],["19","61"],["19","62"],["19","63"],["19","64"],["20","01"],["20","02"],["20","03"],["20","04"],["20","06"],["20","08"],["20","09"],["20","11"],["20","12"],["20","13"],["20","14"],["20","15"],["21","01"],["21","02"],["21","03"],["21","04"],["21","05"],["21","06"],["21","07"],["21","08"],["21","09"],["21","10"],["21","11"],["21","12"],["21","13"],["21","13"],["21","15"],["22","01"],["22","01"],["22","02"],["22","03"],["22","05"],["22","06"],["22","07"],["22","08"],["22","09"],["22","10"],["22","11"],["22","12"],["22","13"],["22","14"],["22","15"],["22","16"],["22","17"],["22","19"],["22","20"],["22","21"],["22","22"],["23","01"],["23","02"],["23","03"],["23","04"],["23","05"],["23","07"],["23","09"],["23","10"],["23","11"],["23","12"],["23","14"],["23","15"],["23","16"],["23","17"],["23","19"],["23","20"],["23","21"],["23","22"],["23","23"],["23","24"],["23","25"],["24","01"],["24","02"],["24","03"],["24","04"],["24","04"],["24","05"],["24","06"],["24","07"],["24","08"],["24","09"],["24","10"],["24","11"],["24","12"],["24","13"],["24","14"],["25","01"],["25","03"],["25","04"],["25","06"],["25","07"],["25","08"],["25","11"],["25","12"],["25","13"],["25","14"],["26","05"],["26","06"],["26","08"],["26","09"],["26","10"],["26","11"],["26","12"],["26","13"],["26","14"],["26","15"],["26","17"],["26","18"],["26","19"],["26","20"],["26","21"],["26","22"],["26","23"],["27","01"],["27","02"],["27","04"],["27","05"],["27","06"],["27","07"],["27","09"],["27","10"],["27","11"],["27","13"],["27","14"],["27","15"],["27","17"],["27","19"],["27","20"],["27","22"],["27","23"],["27","24"],["27","25"],["27","26"],["27","27"],["27","29"],["27","31"],["27","32"],["27","34"],["27","35"],["27","36"],["27","37"],["27","38"],["27","40"],["27","41"],["27","42"],["27","42"],["27","45"],["27","46"],["27","47"],["27","48"],["27","49"],["28","02"],["28","03"],["28","04"],["28","05"],["28","06"],["28","07"],["28","09"],["28","10"],["28","11"],["28","12"],["28","14"],["28","15"],["28","16"],["28","17"],["28","18"],["28","19"],["28","20"],["28","21"],["28","22"],["28","23"],["28","29"],["28","30"],["29","01"],["29","03"],["29","04"],["29","05"],["29","06"],["29","07"],["29","08"],["29","09"],["29","10"],["29","11"],["29","12"],["29","15"],["29","16"],["29","17"],["29","18"],["29","19"],["29","20"],["29","21"],["29","22"],["29","23"],["29","24"],["29","26"],["29","27"],["29","28"],["29","29"],["29","30"],["29","31"],["29","32"],["29","33"],["30","02"],["30","04"],["30","05"],["30","07"],["30","09"],["30","10"],["30","11"],["30","12"],["30","13"],["30","13"],["30","14"],["30","15"],["30","16"],["31","01"],["31","02"],["31","03"],["31","05"],["31","06"],["31","07"],["31","08"],["31","09"],["31","10"],["31","11"],["31","12"],["31","13"],["31","15"],["31","16"],["31","17"],["31","19"],["31","21"],["31","22"],["31","24"],["31","26"],["32","02"],["32","03"],["32","04"],["32","05"],["32","07"],["32","08"],["32","09"],["32","10"],["32","11"],["32","12"],["32","13"],["32","14"],["32","15"],["32","16"],["32","19"],["32","20"],["32","20"],["32","21"],["32","22"],["32","23"],["32","25"],["32","25"],["32","26"],["32","27"],["32","28"],["32","29"],["32","30"],["32","31"],["32","34"],["32","36"],["32","37"],["33","01"],["33","02"],["33","03"],["33","04"],["33","05"],["33","06"],["33","07"],["33","09"],["33","11"],["33","12"],["33","13"],["33","14"],["33","18"],["33","21"],["33","22"],["33","23"],["33","24"],["33","25"],["33","26"],["33","27"],["33","28"],["33","29"],["33","31"],["34","01"],["34","02"],["34","03"],["34","04"],["34","06"],["34","07"],["34","08"],["34","11"],["34","12"],["34","13"],["34","14"],["34","15"],["34","16"],["34","17"],["34","18"],["34","19"],["34","20"],["34","21"],["34","22"],["34","23"],["34","24"],["35","01"],["35","02"],["35","03"],["35","04"],["35","05"],["35","07"],["35","08"],["35","09"],["35","10"],["35","11"],["35","12"],["35","13"],["35","15"],["35","16"],["35","17"],["35","21"],["35","22"],["35","23"],["35","24"],["35","25"],["36","01"],["36","02"],["36","03"],["36","04"],["36","05"],["36","06"],["36","07"],["36","08"],["36","09"],["36","10"],["36","11"],["36","12"],["36","13"],["36","14"],["36","15"],["36","16"],["36","17"],["36","17"],["36","18"],["36","18"],["36","21"],["36","22"],["36","23"],["36","24"],["36","25"],["36","26"],["36","27"],["36","28"],["36","29"],["36","30"],["36","31"],["36","32"],["36","33"],["36","34"],["36","35"],["36","36"],["36","36"],["36","37"],["36","38"],["36","39"],["36","40"],["37","01"],["37","02"],["37","03"],["37","04"],["37","05"],["37","06"],["37","07"],["37","08"],["37","09"],["37","10"],["37","12"],["37","14"],["37","15"],["37","16"],["37","16"],["37","17"],["38","01"],["38","01"],["38","02"],["38","03"],["38","04"],["38","06"],["38","07"],["38","08"],["38","09"],["38","10"],["38","11"],["38","13"],["38","14"],["38","15"],["38","16"],["38","18"],["38","19"],["39","01"],["39","03"],["39","04"],["39","05"],["39","06"],["39","07"],["39","08"],["39","09"],["39","10"],["39","12"],["39","13"],["39","14"],["39","15"],["39","16"],["40","02"],["40","02"],["40","03"],["40","04"],["40","06"],["40","07"],["40","09"],["40","10"],["40","11"],["40","15"],["40","16"],["40","17"],["40","18"],["40","19"],["40","20"],["40","21"],["40","22"],["40","23"],["40","25"],["40","26"],["40","27"],["40","28"],["41","02"],["41","03"],["41","05"],["41","06"],["41","08"],["41","09"],["41","10"],["41","11"],["41","12"],["41","13"],["41","14"],["41","15"],["41","17"],["41","18"],["41","19"],["41","20"],["41","21"],["42","01"],["42","01"],["42","02"],["42","03"],["42","04"],["42","08"],["42","10"],["42","11"],["42","12"],["42","13"],["42","14"],["42","15"],["42","16"],["42","17"],["42","19"],["42","20"],["43","01"],["43","02"],["43","03"],["43","04"],["43","04"],["43","06"],["43","07"],["43","08"],["43","09"],["43","10"],["43","10"],["43","11"],["43","12"],["43","13"],["43","14"],["43","16"],["43","17"],["43","19"],["43","20"],["43","21"],["44","01"],["44","02"],["44","03"],["44","05"],["44","07"],["44","08"],["44","09"],["44","10"],["44","11"],["44","13"],["44","14"],["44","15"],["44","17"],["44","18"],["44","19"],["44","20"],["44","23"],["44","24"],["44","25"],["44","26"],["44","27"],["44","28"],["44","29"],["44","30"],["44","31"],["44","32"],["44","34"],["44","35"],["44","36"],["44","37"],["44","38"],["44","39"],["44","40"],["44","41"],["44","42"],["44","44"],["44","45"],["44","46"],["44","47"],["44","48"],["44","49"],["44","50"],["44","52"],["44","53"],["44","54"],["45","01"],["45","03"],["45","04"],["45","05"],["45","06"],["45","07"],["45","08"],["45","09"],["45","10"],["45","11"],["45","12"],["45","13"],["45","13"],["45","14"],["45","15"],["45","16"],["45","17"],["45","18"],["45","19"],["45","20"],["45","22"],["45","24"],["45","25"],["45","26"],["45","27"],["45","28"],["45","29"],["46","01"],["46","01"],["46","02"],["46","03"],["46","04"],["46","04"],["46","05"],["46","06"],["46","07"],["46","08"],["46","09"],["46","09"],["46","09"],["46","10"],["46","11"],["46","12"],["46","13"],["46","14"],["46","14"],["46","15"],["46","16"],["46","18"],["46","19"],["47","02"],["47","03"],["47","04"],["47","05"],["47","05"],["47","06"],["47","07"],["47","09"],["47","10"],["47","11"],["47","12"],["47","12"],["47","13"],["47","14"],["47","15"],["47","15"],["47","16"],["47","18"],["47","19"],["48","02"],["48","03"],["48","04"],["48","05"],["48","06"],["48","07"],["48","08"],["48","09"],["48","10"],["48","11"],["48","12"],["48","13"],["48","14"],["48","15"],["48","16"],["48","17"],["48","18"],["48","19"],["48","21"],["48","23"],["48","25"],["48","26"],["48","27"],["48","28"],["48","29"],["48","30"],["48","31"],["48","32"],["48","33"],["48","34"],["48","35"],["48","36"],["48","37"],["48","38"],["48","39"],["48","40"],["48","41"],["48","42"],["48","43"],["48","44"],["48","45"],["48","46"],["48","47"],["48","48"],["48","49"],["48","50"],["48","51"],["48","52"],["48","53"],["48","54"],["48","55"],["48","56"],["48","57"],["48","58"],["48","59"],["49","01"],["49","02"],["49","03"],["49","04"],["49","05"],["49","06"],["49","07"],["49","08"],["49","09"],["49","10"],["49","11"],["49","12"],["49","13"],["49","14"],["49","15"],["49","16"],["49","17"],["49","18"],["49","19"],["49","20"],["49","21"],["49","22"],["49","23"],["49","24"],["49","25"],["49","26"],["49","27"],["49","28"],["49","29"],["49","30"],["49","31"],["49","32"],["49","33"],["49","34"],["49","35"],["49","37"],["49","38"],["49","39"],["49","41"],["49","42"],["49","43"],["50","01"],["50","02"],["50","03"],["50","04"],["50","05"],["50","06"],["50","09"],["50","11"],["50","12"],["50","14"],["50","15"],["50","16"],["50","18"],["50","19"],["50","21"],["50","22"],["51","01"],["51","02"],["51","04"],["51","06"],["51","07"],["51","08"],["51","09"],["51","10"],["51","11"],["51","12"],["51","13"],["51","14"],["51","15"],["51","16"],["51","18"],["51","19"],["51","19"],["51","20"],["51","21"],["51","22"],["51","23"],["51","24"],["51","25"],["51","26"],["51","27"],["51","27"],["51","28"],["52","01"],["52","02"],["52","05"],["52","06"],["52","07"],["52","08"],["52","09"],["52","10"],["52","11"],["52","13"],["52","14"],["52","17"],["52","18"],["52","20"],["52","21"],["52","22"],["52","24"],["52","25"],["52","27"],["52","76"],["53","01"],["53","02"],["53","04"],["53","05"],["53","06"],["53","08"],["53","09"],["53","10"],["53","11"],["53","12"],["53","15"],["53","26"],["53","27"],["53","28"],["53","29"],["53","30"],["53","32"],["53","33"],["53","35"],["53","36"],["54","02"],["54","02"],["54","03"],["54","05"],["54","07"],["54","08"],["54","09"],["54","11"],["54","13"],["54","14"],["54","15"],["54","16"],["54","17"],["54","18"],["54","19"],["54","21"],["54","22"],["54","23"],["54","24"],["54","28"],["54","33"],["54","33"],["54","34"],["54","35"],["54","36"],["54","38"],["54","39"],["54","40"],["54","42"],["55","02"],["55","04"],["55","05"],["55","06"],["55","07"],["55","08"],["55","09"],["55","10"],["55","11"],["55","12"],["55","13"],["55","14"],["55","15"],["55","16"],["55","17"],["55","18"],["55","20"],["55","21"],["55","24"],["55","25"],["55","26"],["55","27"],["55","29"],["55","30"],["55","31"],["55","32"],["55","33"],["55","34"],["55","36"],["55","37"],["55","38"],["55","39"],["55","40"],["55","41"],["55","43"],["55","44"],["55","45"],["55","45"],["55","46"],["55","48"],["55","50"],["55","51"],["55","53"],["55","54"],["55","55"],["55","56"],["55","57"],["55","58"],["55","60"],["55","61"],["55","62"],["56","01"],["56","02"],["56","03"],["56","04"],["56","05"],["56","06"],["56","06"],["56","07"],["56","08"],["56","09"],["56","10"],["56","11"],["56","12"],["56","14"],["56","15"],["56","17"],["56","18"],["56","19"],["56","20"],["56","21"],["56","22"],["56","23"],["56","25"],["56","26"],["56","27"],["56","28"],["56","29"],["56","30"],["56","31"],["56","32"],["56","33"],["56","34"],["56","34"],["56","36"],["56","38"],["56","39"],["57","01"],["57","04"],["57","06"],["57","07"],["57","08"],["57","13"],["57","14"],["58","01"],["58","03"],["58","04"],["58","05"],["58","06"],["58","07"],["58","08"],["58","09"],["58","10"],["58","12"],["58","13"],["58","14"],["58","15"],["58","16"],["58","22"],["58","23"],["58","25"],["58","26"],["58","27"],["58","28"],["58","30"],["58","31"],["58","33"],["58","34"],["58","36"],["58","37"],["58","59"],["58","60"],["58","61"],["80","08"],["80","09"],["80","18"],["80","19"],["80","20"],["80","22"],["80","24"],["80","31"],["80","34"],["80","35"],["80","37"],["80","39"],["80","42"],["80","46"],["80","48"],["80","49"],["80","52"],["80","53"],["80","55"],["80","56"],["80","57"],["80","61"],["80","62"],["80","69"],["80","72"],["80","73"],["81","01"],["81","03"],["81","04"],["81","06"],["81","09"],["81","10"],["81","12"],["82","01"],["82","04"],["82","05"],["82","07"],["82","08"],["82","09"],["82","11"],["82","12"],["82","14"],["82","16"],["82","19"],["82","20"],["82","21"],["82","22"],["82","23"],["82","24"],["82","25"],["82","26"],["82","27"],["82","28"],["82","29"],["82","31"],["82","32"],["82","33"],["82","35"],["82","38"],["82","39"],["82","40"],["82","41"],["82","42"],["82","45"],["82","47"],["82","48"],["82","71"],["83","01"],["83","02"],["83","04"],["83","07"],["83","08"],["83","10"],["83","11"],["83","12"],["83","15"],["83","17"],["83","18"],["83","19"],["83","20"],["83","23"],["83","25"],["83","27"],["83","27"],["83","28"],["83","29"],["83","31"],["83","32"],["83","33"],["83","34"],["83","36"],["83","37"],["83","39"],["83","40"],["83","42"],["83","43"],["84","04"],["84","08"],["84","25"],["84","26"],["84","26"],["84","26"],["84","28"],["84","29"],["84","30"],["84","31"],["84","32"],["84","33"],["84","34"],["84","36"],["84","37"],["84","39"],["84","40"],["84","42"],["84","43"],["84","46"],["84","47"],["84","49"],["85","02"],["85","03"],["85","04"],["85","05"],["85","06"],["85","07"],["85","08"],["85","10"],["85","11"],["85","12"],["85","14"],["85","18"],["85","21"],["85","22"],["85","23"],["85","26"],["85","28"],["85","29"],["85","31"],["85","32"],["85","33"],["86","01"],["86","02"],["86","03"],["86","05"],["86","06"],["86","07"],["86","08"],["86","09"],["86","10"],["86","11"],["86","12"],["86","13"],["86","14"],["86","15"],["86","16"],["86","17"],["86","19"],["86","20"],["86","23"],["86","24"],["86","25"],["86","28"],["86","29"],["86","33"],["86","35"],["87","01"],["87","02"],["87","03"],["87","05"],["87","06"],["87","07"],["87","07"],["87","12"],["87","16"],["87","18"],["88","02"],["88","03"],["88","04"],["88","05"],["88","09"],["88","10"],["88","18"],["88","19"],["88","20"],["88","21"],["88","25"],["88","26"],["88","27"],["88","28"],["88","31"],["88","33"],["88","34"],["88","35"],["88","36"],["94","02"],["94","03"],["94","05"],["94","06"],["94","07"],["94","07"],["94","08"],["94","09"],["94","12"],["94","14"],["94","15"],["94","16"],["94","17"],["94","18"],["94","19"],["94","20"],["94","21"],["94","22"],["94","23"],["94","24"],["94","25"],["94","26"],["94","27"],["94","28"],["94","29"],["94","46"],["95","04"],["95","09"],["95","12"],["95","17"],["95","19"],["95","20"],["95","22"],["95","25"],["95","27"],["95","28"],["95","29"],["95","31"],["95","33"],["95","34"],["95","35"],["95","36"],["95","38"],["95","39"],["95","40"],["95","41"],["95","42"],["95","43"],["95","44"],["95","45"],["95","46"],["95","47"],["95","48"],["95","50"],["95","54"],["95","55"],["95","56"],["95","57"],["95","58"],["95","60"],["95","61"],["95","62"],["95","64"],["95","65"],["95","66"],["95","67"],["95","69"],["95","70"],["95","71"],["95","72"],["95","73"],["95","74"],["95","75"],["95","76"],["95","78"],["95","78"],["95","79"],["95","80"],["96","02"],["96","03"],["96","04"],["96","05"],["96","06"],["96","07"],["96","08"],["96","09"],["96","10"],["96","12"],["96","13"],["96","14"],["96","15"],["96","16"],["96","17"],["96","22"],["96","23"],["96","25"],["96","26"],["96","27"],["96","29"],["96","30"],["96","31"],["96","32"],["96","33"],["96","35"],["96","36"],["96","37"],["96","39"],["96","41"],["96","43"],["96","43"],["96","44"],["96","45"],["96","46"],["96","47"],["96","48"],["96","56"],["96","59"],["97","03"],["97","05"],["97","06"],["97","07"],["97","08"],["97","10"],["97","11"],["97","12"],["97","13"],["98","01"],["98","02"],["98","03"],["98","04"],["98","05"],["98","06"],["98","07"],["98","09"],["98","10"],["98","11"],["98","12"],["98","14"],["98","15"],["98","16"],["98","18"],["98","19"],["98","21"],["98","21"],["98","22"],["98","25"],["98","26"],["98","27"],["99","01"],["99","02"],["99","03"],["99","04"],["99","05"],["99","06"],["99","07"],["99","08"],["99","13"],["99","15"],["99","16"],["99","18"],["99","19"],["99","20"],["99","25"],["99","25"],["99","26"],["99","27"],["99","28"],["99","29"],["99","30"],["99","32"],["99","33"],["99","34"],["99","35"],["99","36"],["99","37"],["99","38"],["99","41"]],
+  '11__25__25': [["01","04"],["01","05"],["01","06"],["01","07"],["01","09"],["01","10"],["01","11"],["01","12"],["01","13"],["01","14"],["02","02"],["02","03"],["02","04"],["02","07"],["02","14"],["02","15"],["02","16"],["02","17"],["02","18"],["02","26"],["02","30"],["03","02"],["03","04"],["03","06"],["03","07"],["03","11"],["03","13"],["03","14"],["04","03"],["04","04"],["04","06"],["04","07"],["04","08"],["04","09"],["04","10"],["04","14"],["04","15"],["04","17"],["04","18"],["04","19"],["04","21"],["04","22"],["04","23"],["04","24"],["04","29"],["04","33"],["04","38"],["04","39"],["04","40"],["04","45"],["04","46"],["04","48"],["04","50"],["04","51"],["04","52"],["04","54"],["05","01"],["05","04"],["05","05"],["05","06"],["05","07"],["05","08"],["05","09"],["05","10"],["05","11"],["05","12"],["05","13"],["05","19"],["05","20"],["05","23"],["05","24"],["05","25"],["05","27"],["05","28"],["05","30"],["05","31"],["05","32"],["05","34"],["05","41"],["05","42"],["05","53"],["05","55"],["05","56"],["05","57"],["06","01"],["06","02"],["06","04"],["06","06"],["06","07"],["06","11"],["06","12"],["06","13"],["06","16"],["06","17"],["06","21"],["06","25"],["06","28"],["06","29"],["06","30"],["06","31"],["06","32"],["06","33"],["06","34"],["06","36"],["06","37"],["06","38"],["06","41"],["06","42"],["06","43"],["06","44"],["06","46"],["06","47"],["06","48"],["06","52"],["06","55"],["06","56"],["06","57"],["07","01"],["07","02"],["07","03"],["07","06"],["07","07"],["07","09"],["07","10"],["07","11"],["07","12"],["07","13"],["07","14"],["07","16"],["07","17"],["07","19"],["07","20"],["07","21"],["07","22"],["08","01"],["08","04"],["08","10"],["08","11"],["08","12"],["08","16"],["08","17"],["08","18"],["08","19"],["09","02"],["09","04"],["09","06"],["09","08"],["09","10"],["09","12"],["09","13"],["09","14"],["09","15"],["09","16"],["09","17"],["09","18"],["09","19"],["09","20"],["09","21"],["09","22"],["09","23"],["09","24"],["09","26"],["09","27"],["09","28"],["09","29"],["09","30"],["09","31"],["09","32"],["09","33"],["10","01"],["10","02"],["10","03"],["10","08"],["10","09"],["10","10"],["10","11"],["10","12"],["10","14"],["10","20"],["11","02"],["11","04"],["11","05"],["11","08"],["11","09"],["11","10"],["11","13"],["11","15"],["11","17"],["11","18"],["11","19"],["11","21"],["11","24"],["11","25"],["11","26"],["11","27"],["11","28"],["11","31"],["11","33"],["11","34"],["11","38"],["11","39"],["11","40"],["11","41"],["11","42"],["11","43"],["11","44"],["11","45"],["11","46"],["11","47"],["11","52"],["11","53"],["11","54"],["11","55"],["11","56"],["11","57"],["11","58"],["11","59"],["11","63"],["11","64"],["11","65"],["11","66"],["11","67"],["11","68"],["11","71"],["11","73"],["11","75"],["11","76"],["11","77"],["11","78"],["11","79"],["11","80"],["11","81"],["11","84"],["11","85"],["11","86"],["11","87"],["11","88"],["11","89"],["11","91"],["11","92"],["11","93"],["11","94"],["11","96"],["12","02"],["12","03"],["12","04"],["12","05"],["12","06"],["12","07"],["12","08"],["12","09"],["12","10"],["12","11"],["12","12"],["12","12"],["12","13"],["12","14"],["12","15"],["12","16"],["12","22"],["12","23"],["12","24"],["12","26"],["12","27"],["12","28"],["12","29"],["12","30"],["12","31"],["12","32"],["12","33"],["12","34"],["12","36"],["12","41"],["12","44"],["12","45"],["12","46"],["12","47"],["12","48"],["12","49"],["12","54"],["12","55"],["12","56"],["13","02"],["13","03"],["13","04"],["13","05"],["13","06"],["13","07"],["13","07"],["13","09"],["13","10"],["13","11"],["13","12"],["13","14"],["13","14"],["13","15"],["13","16"],["13","17"],["13","18"],["13","19"],["13","20"],["13","21"],["13","22"],["13","23"],["13","25"],["13","26"],["13","27"],["13","28"],["13","29"],["13","30"],["13","32"],["13","34"],["13","35"],["13","37"],["13","39"],["13","40"],["13","41"],["13","42"],["13","43"],["13","43"],["13","44"],["13","45"],["13","45"],["13","46"],["13","47"],["13","48"],["13","49"],["13","50"],["13","51"],["13","52"],["13","53"],["13","54"],["13","55"],["13","56"],["13","57"],["13","58"],["13","58"],["13","60"],["13","61"],["13","62"],["13","63"],["13","64"],["13","65"],["13","66"],["13","67"],["13","68"],["13","69"],["13","70"],["13","72"],["13","74"],["13","75"],["13","76"],["13","77"],["13","77"],["13","78"],["13","80"],["13","81"],["13","84"],["13","85"],["13","86"],["13","87"],["13","88"],["13","89"],["13","90"],["13","92"],["14","01"],["14","02"],["14","04"],["14","05"],["14","07"],["14","08"],["14","09"],["14","10"],["14","10"],["14","11"],["14","13"],["14","22"],["14","23"],["14","24"],["14","24"],["14","26"],["14","27"],["14","29"],["14","30"],["14","32"],["14","33"],["14","34"],["14","35"],["14","42"],["14","43"],["14","44"],["15","01"],["15","02"],["15","03"],["15","04"],["15","05"],["15","06"],["15","08"],["15","10"],["15","12"],["15","22"],["15","24"],["15","25"],["15","26"],["15","28"],["15","29"],["15","34"],["15","35"],["15","36"],["15","37"],["15","39"],["15","40"],["15","41"],["15","43"],["15","44"],["15","45"],["15","46"],["15","47"],["15","48"],["15","49"],["15","50"],["15","51"],["15","68"],["15","71"],["15","72"],["15","73"],["15","75"],["15","76"],["16","03"],["16","06"],["16","08"],["16","10"],["16","11"],["16","13"],["16","14"],["16","16"],["16","17"],["16","18"],["16","18"],["16","19"],["16","20"],["16","21"],["16","22"],["16","23"],["16","24"],["16","25"],["16","26"],["16","27"],["16","28"],["16","29"],["17","01"],["17","02"],["17","03"],["17","04"],["17","05"],["17","06"],["17","07"],["17","08"],["17","09"],["17","11"],["17","12"],["17","13"],["17","14"],["17","15"],["17","16"],["17","17"],["17","19"],["17","21"],["17","23"],["18","01"],["18","02"],["18","03"],["18","04"],["18","05"],["18","06"],["18","09"],["18","10"],["18","12"],["18","13"],["18","14"],["18","15"],["18","19"],["18","20"],["18","21"],["18","22"],["18","23"],["18","24"],["18","26"],["18","27"],["18","28"],["18","29"],["18","30"],["18","31"],["18","32"],["18","33"],["18","34"],["18","35"],["18","35"],["18","37"],["18","38"],["18","39"],["18","41"],["18","44"],["18","45"],["18","48"],["18","50"],["18","51"],["18","54"],["18","55"],["18","56"],["18","58"],["18","59"],["18","63"],["18","64"],["18","66"],["18","67"],["18","68"],["18","69"],["18","70"],["18","71"],["18","72"],["18","73"],["18","74"],["18","75"],["18","78"],["18","79"],["18","81"],["18","82"],["18","83"],["18","84"],["18","85"],["18","86"],["18","87"],["18","88"],["18","89"],["18","91"],["18","92"],["18","93"],["18","95"],["19","01"],["19","03"],["19","04"],["19","06"],["19","12"],["19","13"],["19","14"],["19","15"],["19","17"],["19","18"],["19","19"],["19","20"],["19","21"],["19","22"],["19","24"],["19","26"],["19","27"],["19","28"],["19","29"],["19","30"],["19","31"],["19","32"],["19","33"],["19","34"],["19","35"],["19","36"],["19","37"],["19","38"],["19","39"],["20","02"],["20","03"],["20","05"],["20","07"],["20","08"],["20","09"],["20","10"],["20","11"],["20","12"],["20","13"],["20","14"],["20","15"],["20","16"],["21","01"],["21","02"],["21","03"],["21","04"],["21","05"],["21","06"],["21","07"],["21","08"],["21","09"],["21","10"],["21","11"],["21","12"],["21","13"],["21","14"],["21","15"],["21","16"],["21","17"],["21","18"],["21","19"],["21","22"],["21","23"],["21","24"],["21","25"],["21","27"],["21","28"],["21","29"],["21","30"],["21","31"],["21","33"],["21","33"],["21","34"],["21","36"],["21","37"],["21","39"],["21","40"],["21","41"],["21","42"],["21","43"],["21","44"],["21","45"],["21","50"],["21","51"],["21","59"],["21","60"],["21","61"],["21","62"],["21","68"],["21","70"],["22","01"],["22","03"],["22","04"],["22","05"],["22","09"],["22","10"],["22","11"],["22","12"],["22","13"],["22","14"],["22","15"],["22","17"],["22","18"],["22","20"],["22","22"],["22","23"],["22","24"],["22","25"],["22","26"],["22","27"],["22","28"],["22","31"],["22","32"],["22","33"],["22","34"],["22","35"],["22","36"],["22","38"],["22","39"],["22","40"],["22","41"],["22","42"],["22","43"],["22","44"],["22","47"],["22","48"],["22","51"],["22","52"],["22","53"],["22","54"],["23","01"],["23","04"],["23","06"]],
+  '11__25__23': [["01","03"],["01","05"],["01","06"],["01","08"],["01","09"],["02","06"],["02","08"],["02","09"],["02","10"],["02","13"],["02","14"],["02","15"],["02","16"],["02","18"],["02","19"],["02","20"],["02","22"],["02","24"],["02","25"],["02","26"],["02","35"],["02","38"],["02","39"],["02","40"],["02","41"],["02","45"],["02","46"],["02","48"],["02","49"],["02","56"],["03","11"],["03","13"],["03","14"],["03","15"],["03","18"],["03","19"],["03","20"],["03","21"],["03","22"],["03","23"],["03","24"],["03","27"],["03","28"],["03","29"],["03","30"],["03","31"],["03","32"],["03","33"],["03","35"],["03","38"],["03","39"],["03","44"],["03","45"],["03","46"],["03","47"],["03","49"],["03","51"],["03","52"],["03","53"],["03","54"],["03","55"],["03","56"],["03","62"],["03","63"],["04","04"],["04","06"],["04","07"],["04","11"],["04","13"],["04","14"],["04","15"],["04","16"],["04","17"],["04","18"],["04","20"],["04","22"],["04","24"],["04","25"],["04","26"],["04","28"],["04","29"],["04","30"],["04","31"],["04","32"],["04","33"],["04","35"],["04","36"],["04","37"],["04","53"],["04","54"],["04","55"],["04","57"],["05","06"],["05","07"],["05","08"],["05","09"],["05","10"],["05","11"],["05","12"],["05","13"],["05","14"],["05","15"],["05","16"],["05","17"],["05","19"],["05","19"],["05","20"],["05","21"],["05","22"],["05","23"],["05","24"],["05","25"],["05","26"],["05","27"],["05","28"],["05","29"],["05","30"],["05","31"],["05","32"],["05","33"],["06","01"],["06","03"],["06","05"],["06","07"],["06","08"],["06","09"],["06","10"],["06","12"],["06","13"],["06","14"],["06","17"],["06","18"],["06","19"],["06","20"],["06","21"],["06","22"],["06","23"],["06","26"],["06","29"],["06","32"],["06","33"],["06","35"],["06","38"],["06","39"],["06","40"],["06","41"],["06","43"],["06","44"],["06","45"],["06","46"],["06","47"],["06","48"],["06","50"],["06","51"],["06","52"],["06","53"],["07","01"],["07","02"],["07","04"],["07","05"],["07","07"],["07","09"],["07","10"],["07","11"],["07","13"],["07","14"],["07","15"],["07","16"],["07","17"],["07","18"],["07","19"],["07","20"],["07","21"],["07","23"],["07","24"],["07","26"],["07","30"],["07","31"],["07","32"],["07","36"],["07","37"],["07","38"],["08","01"],["08","02"],["08","03"],["08","04"],["08","05"],["08","08"],["08","09"],["08","10"],["08","11"],["08","12"],["08","15"],["08","16"],["08","18"],["08","19"],["08","20"],["08","23"],["08","24"],["08","25"],["08","26"],["08","28"],["08","30"],["08","31"],["08","35"],["08","36"],["08","37"],["09","01"],["09","02"],["09","03"],["09","04"],["09","05"],["09","06"],["09","07"],["09","08"],["09","09"],["09","10"],["09","11"],["09","12"],["09","13"],["09","14"],["09","15"],["09","16"],["09","17"],["09","18"],["09","19"],["09","20"],["09","21"],["09","22"],["09","23"],["09","25"],["09","26"],["09","28"],["09","29"],["09","30"],["09","31"],["10","03"],["10","05"],["10","06"],["10","07"],["10","11"],["10","12"],["10","13"],["10","16"],["10","17"],["10","21"],["10","22"],["10","23"],["10","24"],["10","25"],["10","26"],["10","28"],["10","29"],["10","37"],["10","44"],["11","01"],["11","02"],["11","04"],["11","05"],["11","06"],["11","07"],["11","08"],["11","10"],["11","11"],["11","12"],["11","13"],["11","14"],["11","15"],["11","16"],["11","17"],["11","18"],["11","19"],["11","20"],["11","23"],["11","24"],["11","25"],["11","26"],["11","27"],["11","28"],["11","29"],["11","30"],["11","31"],["11","32"],["11","33"],["11","34"],["11","35"],["12","06"],["12","07"],["12","08"],["12","09"],["12","11"],["12","13"],["12","14"],["12","15"],["12","16"],["12","17"],["12","18"],["12","19"],["12","21"],["12","22"],["12","23"],["12","24"],["12","25"],["12","26"],["12","27"],["12","28"],["12","29"],["12","30"],["12","31"],["12","34"],["12","35"],["12","36"],["17","01"],["17","02"],["17","03"],["17","04"],["17","05"],["17","06"],["17","07"],["17","08"],["17","09"],["17","10"],["17","14"],["17","18"],["17","19"],["17","20"],["17","21"],["17","22"],["17","23"],["17","24"],["18","02"],["18","03"],["18","04"],["18","07"],["18","08"],["18","09"],["18","10"],["18","11"],["18","12"],["18","13"],["18","14"],["18","15"],["18","16"],["18","17"],["18","18"],["18","19"],["18","22"],["18","23"],["18","24"],["18","26"],["18","27"],["18","28"],["18","29"],["18","30"],["18","31"],["18","34"],["18","35"],["18","36"],["18","36"],["18","38"],["19","01"],["19","03"],["19","04"],["19","05"],["19","06"],["19","07"],["19","08"],["19","09"],["19","10"],["19","11"],["19","12"],["19","13"],["19","15"],["19","16"],["19","17"],["19","18"],["19","21"],["19","22"],["19","23"],["19","24"],["19","25"],["19","27"],["19","28"],["19","29"],["19","30"],["19","32"],["19","33"],["19","34"],["19","36"],["19","37"],["19","38"],["19","39"],["20","01"],["20","02"],["20","05"],["20","06"],["20","07"],["20","08"],["20","09"],["20","10"],["20","11"],["20","12"],["20","14"],["20","15"],["20","20"],["20","23"],["20","24"],["20","25"],["20","26"],["20","27"],["21","01"],["21","02"],["21","03"],["21","05"],["21","06"],["21","07"],["21","08"],["21","10"],["21","11"],["21","12"],["21","13"],["21","14"],["21","15"],["21","21"],["21","22"],["21","25"],["21","26"],["21","27"],["21","28"],["21","29"],["21","30"],["21","31"],["21","32"],["21","33"],["21","34"],["21","35"],["21","36"],["21","37"],["21","38"],["21","41"],["22","02"],["22","03"],["22","04"],["22","05"],["22","06"],["22","07"],["22","08"],["22","09"],["22","10"],["22","11"],["22","12"],["22","13"],["22","14"],["22","15"],["22","16"],["22","17"],["22","18"],["22","20"],["22","22"],["22","24"],["22","25"],["22","26"],["22","27"],["22","28"],["22","29"],["22","31"],["22","32"],["22","33"],["22","34"],["22","35"],["22","36"],["23","01"],["23","02"],["23","06"],["23","08"],["23","09"],["23","10"],["23","13"],["23","14"],["23","15"],["23","18"],["23","19"],["23","20"],["23","21"],["23","22"],["23","23"],["23","24"],["23","25"],["23","26"],["23","27"],["23","28"],["23","30"],["23","31"],["23","32"],["23","33"],["23","34"],["24","01"],["24","02"],["24","03"],["24","04"],["24","05"],["24","06"],["24","07"],["24","08"],["24","09"],["24","11"],["24","12"],["24","13"],["24","14"],["24","17"],["24","18"],["24","20"],["24","21"],["24","22"],["24","25"],["24","28"],["24","29"],["24","30"],["24","32"],["25","01"],["25","02"],["25","03"],["25","05"],["25","06"],["25","07"],["25","08"],["25","09"],["25","10"],["25","12"],["25","14"],["25","20"],["25","21"],["25","24"],["26","03"],["26","04"],["26","05"],["26","06"],["26","09"],["26","10"],["26","11"],["26","13"],["26","18"],["26","19"],["26","24"],["26","26"],["26","29"],["26","32"],["26","37"],["26","38"],["26","41"],["26","42"],["26","43"],["26","44"],["26","45"],["26","46"],["26","48"],["28","01"],["28","03"],["28","03"],["28","03"],["28","04"],["28","05"],["28","07"],["28","08"],["29","05"],["29","09"],["29","10"],["30","02"],["30","03"],["30","04"],["30","05"],["30","06"],["30","09"],["30","11"],["30","12"],["30","13"],["30","17"],["30","19"],["30","21"],["30","22"],["30","23"],["30","24"],["30","27"],["30","29"],["30","32"],["30","35"],["30","36"],["30","38"],["30","39"],["30","42"],["30","43"],["30","46"],["30","47"],["30","49"],["30","50"],["30","51"],["30","52"],["30","53"],["30","54"],["30","56"],["30","57"],["30","58"],["30","59"],["30","59"],["30","60"],["30","61"],["30","62"],["30","63"],["30","64"],["31","02"],["31","03"],["31","04"],["31","05"],["31","06"],["31","07"],["31","08"],["31","10"],["31","11"],["31","12"],["31","13"],["31","14"],["31","18"],["31","19"],["31","20"],["31","21"],["31","22"],["31","23"],["31","24"],["31","26"],["32","01"],["32","02"],["32","03"],["32","04"],["32","05"],["32","06"],["32","07"],["32","08"],["32","10"],["32","11"],["32","12"],["32","14"],["32","16"],["32","17"],["32","18"],["32","19"],["32","21"],["32","23"],["32","24"],["32","25"],["32","26"],["32","27"],["32","29"],["32","30"],["32","31"],["32","32"],["32","33"],["32","34"],["32","35"],["32","36"],["32","38"],["32","39"],["32","40"],["32","41"],["32","42"],["32","46"],["32","47"],["32","49"],["32","54"],["32","55"],["32","56"],["32","57"],["32","58"],["32","59"],["32","60"],["32","61"],["32","62"],["32","63"],["32","64"],["32","65"],["32","66"],["33","01"],["33","06"],["33","08"],["33","09"],["33","10"],["33","11"],["33","12"],["33","13"],["33","15"],["33","16"],["33","17"],["33","21"],["33","22"],["33","23"],["33","24"],["33","28"],["33","29"],["34","01"],["34","03"],["34","04"],["34","07"],["34","09"],["34","11"],["34","11"],["34","12"],["34","13"],["34","14"],["34","15"],["34","16"],["34","17"],["34","18"],["34","19"],["34","20"],["34","21"],["34","22"],["34","23"],["34","24"],["34","25"],["34","26"],["34","27"],["34","28"],["34","29"],["34","30"],["34","31"],["34","32"],["34","33"],["34","35"],["34","36"],["34","37"],["34","39"],["34","40"],["34","41"],["34","42"],["34","43"],["34","44"],["34","45"],["34","46"],["34","47"],["34","48"],["34","49"],["34","51"],["34","54"],["34","55"],["34","56"],["34","57"],["34","59"],["34","61"],["34","62"],["34","63"],["34","64"],["34","65"],["35","02"],["35","03"],["35","04"],["35","05"],["35","07"],["35","08"],["35","10"],["35","11"],["35","12"],["35","13"],["35","14"],["35","15"],["35","16"],["35","18"],["35","20"],["35","22"],["35","23"],["35","24"],["35","25"],["35","28"],["35","30"],["35","31"],["35","32"],["35","33"],["35","34"],["35","35"],["35","37"],["35","38"],["35","38"],["35","39"],["35","40"],["35","41"],["35","42"],["35","43"],["35","44"],["35","45"],["35","46"],["35","47"],["35","48"],["35","49"],["35","50"],["35","52"],["35","53"],["35","54"],["35","56"],["35","57"],["35","58"],["35","59"],["35","60"],["35","62"],["35","63"],["35","64"],["35","65"],["35","66"],["35","68"],["35","69"],["35","70"],["35","71"],["35","72"],["36","01"],["36","02"],["36","04"],["36","06"],["36","07"],["36","08"],["36","09"],["36","10"],["36","11"],["36","12"],["36","13"],["36","15"],["36","16"],["36","17"],["36","18"],["36","19"],["36","20"],["36","21"],["36","22"],["36","24"],["36","25"],["36","26"],["36","27"],["36","28"],["36","29"],["36","30"],["36","31"],["36","32"],["36","33"],["36","34"],["36","35"],["36","36"],["36","37"],["36","38"],["36","39"],["36","41"],["36","43"],["36","45"],["36","46"],["36","47"],["36","48"],["36","49"],["36","50"],["36","52"],["36","53"],["36","54"],["36","55"],["36","56"],["36","57"],["36","58"],["36","59"],["36","60"],["36","61"],["36","62"],["36","63"],["36","65"],["36","66"],["36","67"],["36","69"],["36","71"],["36","72"],["36","73"],["36","74"],["36","76"],["36","76"],["36","77"],["36","79"],["36","80"],["37","01"],["37","02"],["37","03"],["37","04"],["37","05"],["37","06"],["37","07"],["37","08"],["37","09"],["37","10"],["37","11"],["37","12"],["37","20"],["37","29"],["37","31"],["37","32"],["37","33"],["37","34"],["37","36"],["37","37"],["37","38"],["37","39"],["37","40"],["37","42"],["37","43"],["38","03"],["38","04"],["38","05"],["38","08"],["38","09"],["38","11"],["38","12"],["38","13"],["38","14"],["38","15"],["38","16"],["38","18"],["38","19"],["38","20"],["38","21"],["38","22"],["38","24"],["38","25"],["38","26"],["38","28"],["38","30"],["38","31"],["38","32"],["38","33"],["38","35"],["38","37"],["38","39"],["38","40"],["38","41"],["38","42"],["38","44"],["38","45"],["38","46"],["39","01"],["39","02"],["39","03"],["39","03"],["39","04"],["39","05"],["39","06"],["39","07"],["39","08"],["39","09"],["39","10"],["39","12"],["39","13"],["39","14"],["39","15"],["39","16"],["39","17"],["39","18"],["39","19"],["39","20"],["39","21"],["39","22"],["39","23"],["39","25"],["39","26"],["39","27"],["39","28"],["39","29"],["39","31"],["39","32"],["39","33"],["39","34"],["39","35"],["39","36"],["39","41"],["39","42"],["39","44"],["39","48"],["39","50"],["39","51"],["39","52"],["40","01"],["40","02"],["40","03"],["40","05"],["40","06"],["40","07"],["40","08"],["40","09"],["40","10"],["40","11"],["40","12"],["40","13"],["40","14"],["40","15"],["40","16"],["40","17"],["40","18"],["40","19"],["40","20"],["40","21"],["40","22"],["40","23"],["40","25"],["40","26"],["40","27"],["40","28"],["40","30"],["40","31"],["40","32"],["41","01"],["41","06"],["41","08"],["41","09"],["41","10"],["41","11"],["41","12"],["41","13"],["41","14"],["41","15"],["41","17"],["41","18"],["41","19"],["41","20"],["41","21"],["41","22"],["41","24"],["41","26"],["41","28"],["41","29"],["41","30"],["41","31"],["41","32"],["41","33"],["41","34"],["41","35"],["41","36"],["41","37"],["41","39"],["41","44"],["41","46"],["42","01"],["42","02"],["42","03"],["42","04"],["42","05"],["42","06"],["42","07"],["42","08"],["42","09"],["42","10"],["42","11"],["42","12"],["42","13"],["42","14"],["42","15"],["42","16"],["42","18"],["42","19"],["42","20"],["42","21"],["42","24"],["42","25"],["42","26"],["42","27"],["42","28"],["42","29"],["42","31"],["42","32"],["42","33"],["42","34"],["42","35"],["42","36"],["42","37"],["42","39"],["42","40"],["42","43"],["42","44"],["42","45"],["42","46"],["42","47"],["48","01"],["48","02"],["48","03"],["48","17"],["48","20"],["48","23"],["48","24"],["48","25"],["48","26"],["48","28"],["48","29"],["48","30"],["48","31"],["48","33"],["48","34"],["48","35"],["48","36"],["48","37"],["48","38"],["48","39"],["48","40"],["49","07"],["49","08"],["49","10"],["49","11"],["49","12"],["49","13"],["49","18"],["49","19"],["49","20"],["49","25"],["49","26"],["49","30"],["49","32"],["49","33"],["49","36"],["49","37"],["49","38"],["49","41"],["49","42"],["49","43"],["49","44"],["49","45"],["49","46"],["49","47"],["49","49"],["52","01"],["52","04"],["52","05"],["52","06"],["52","09"],["52","10"],["52","11"],["52","12"],["52","16"],["52","18"],["52","19"],["52","23"],["52","25"],["52","26"],["52","27"],["52","28"],["52","29"],["52","32"],["52","33"],["52","37"],["52","38"],["52","39"],["52","40"],["52","43"],["52","44"],["52","46"],["52","50"],["52","51"],["52","52"],["52","57"],["52","60"],["52","69"],["53","01"],["53","02"],["53","04"],["53","06"],["53","07"],["53","08"],["53","09"],["53","10"],["53","11"],["53","12"],["53","13"],["53","17"],["53","19"],["53","21"],["53","22"],["53","27"],["53","28"],["53","29"],["53","31"],["53","33"],["53","34"],["53","36"],["53","37"],["53","38"],["53","39"],["54","01"],["54","02"],["54","03"],["54","04"],["54","05"],["54","06"],["54","07"],["54","08"],["54","09"],["54","11"],["54","13"],["54","16"],["54","17"],["54","18"],["54","19"],["54","20"],["54","21"],["54","22"],["54","23"],["54","27"],["54","28"],["54","29"],["54","30"],["54","31"],["54","32"],["54","33"],["54","36"],["54","37"],["54","38"],["54","39"],["54","40"],["54","41"],["54","43"],["54","44"],["54","45"],["55","02"],["55","03"],["55","04"],["55","05"],["55","06"],["55","10"],["55","12"],["55","13"],["55","14"],["55","15"],["55","16"],["55","16"],["55","17"],["55","19"],["55","20"],["55","21"],["55","22"],["55","23"],["55","24"],["55","25"],["55","26"],["55","27"],["55","28"],["55","29"],["55","30"],["55","31"],["55","35"],["55","36"],["55","37"],["55","39"],["55","40"],["55","41"],["56","01"],["56","02"],["56","03"],["56","04"],["56","05"],["56","06"],["56","07"],["56","08"],["56","09"],["56","10"],["56","11"],["56","12"],["56","13"],["56","14"],["56","15"],["56","17"],["56","18"],["56","19"],["56","20"],["56","21"],["56","22"],["56","23"],["56","24"],["56","25"],["56","26"],["56","27"],["56","28"],["56","29"],["56","30"],["56","31"],["56","33"],["56","34"],["56","35"],["56","36"],["56","37"],["56","38"],["56","39"],["56","40"],["56","42"],["56","43"],["56","44"],["56","45"],["56","46"],["56","47"],["56","48"],["56","49"],["56","50"],["56","51"],["56","52"],["56","53"],["56","54"],["56","55"],["57","04"],["57","05"],["57","09"],["57","11"],["57","14"],["57","17"],["57","18"],["57","19"],["57","21"],["57","22"],["57","25"],["57","26"],["57","27"],["58","01"],["58","02"],["58","03"],["58","04"],["58","08"],["58","09"],["58","10"],["58","12"],["58","13"],["58","14"],["58","15"],["58","16"],["58","17"],["58","18"],["58","19"],["58","20"],["58","23"],["58","24"],["58","27"],["58","28"],["58","29"],["58","30"],["58","31"],["58","33"],["58","36"],["58","36"],["58","37"],["58","47"],["59","02"],["59","03"],["59","04"],["59","07"],["59","10"],["59","11"],["59","13"],["59","14"],["59","15"],["59","16"],["59","18"],["59","19"],["59","21"],["59","22"],["59","23"],["59","24"],["59","25"],["59","26"],["60","06"],["60","08"],["60","09"],["60","10"],["60","11"],["60","12"],["60","14"],["60","15"],["60","21"],["60","25"],["60","31"],["60","32"],["60","33"],["60","36"],["60","52"],["60","53"],["60","54"],["60","55"],["60","58"],["60","59"],["61","01"],["61","02"],["61","03"],["61","06"],["61","08"],["61","09"],["61","12"],["61","13"],["61","14"],["61","15"],["61","16"],["61","18"],["61","19"],["61","20"],["61","21"],["61","22"],["61","23"],["61","24"],["61","26"],["61","28"],["61","29"],["61","32"],["61","33"],["61","35"],["61","37"],["61","38"],["61","39"],["61","40"],["61","45"],["61","46"],["61","49"],["61","50"],["61","52"],["61","55"],["61","57"],["61","58"],["61","62"],["61","63"],["61","65"],["62","01"],["62","03"],["62","05"],["62","06"],["62","07"],["62","08"],["62","09"],["62","10"],["62","11"],["62","12"],["62","13"],["63","03"],["63","05"],["63","06"],["63","07"],["63","08"],["63","09"],["63","13"],["63","19"],["63","21"],["63","22"],["63","23"],["63","24"],["63","26"],["63","31"]],
+  '11__33__29': [["01","01"],["01","02"],["01","03"],["01","05"],["01","06"],["01","08"],["01","10"],["01","11"],["01","12"],["01","15"],["01","16"],["01","18"],["01","19"],["01","21"],["01","22"],["01","23"],["01","27"],["01","28"],["01","29"],["01","31"],["01","32"],["01","33"],["01","35"],["01","36"],["01","37"],["01","41"],["01","42"],["01","43"],["01","44"],["01","45"],["01","46"],["01","49"],["01","52"],["01","55"],["01","56"],["01","57"],["01","59"],["01","61"],["01","62"],["01","63"],["01","64"],["01","65"],["01","66"],["01","67"],["01","68"],["01","68"],["02","02"],["02","04"],["02","05"],["02","06"],["02","08"],["02","13"],["02","14"],["02","17"],["02","18"],["02","19"],["02","23"],["02","24"],["03","01"],["03","02"],["03","03"],["03","04"],["03","05"],["03","06"],["03","07"],["03","08"],["03","09"],["03","10"],["03","11"],["03","12"],["03","13"],["03","14"],["03","15"],["03","16"],["03","17"],["03","19"],["03","21"],["04","06"],["04","09"],["04","11"],["04","12"],["04","13"],["04","14"],["04","15"],["04","18"],["04","19"],["04","20"],["04","21"],["04","22"],["04","23"],["04","24"],["04","25"],["04","26"],["04","27"],["04","28"],["04","29"],["04","36"],["04","38"],["05","01"],["05","04"],["05","05"],["05","06"],["05","07"],["05","08"],["05","11"],["05","15"],["05","16"],["05","19"],["05","20"],["06","02"],["06","04"],["06","06"],["06","07"],["06","08"],["06","09"],["06","10"],["06","12"],["06","16"],["06","18"],["06","19"],["06","20"],["06","21"],["06","22"],["06","23"],["06","25"],["06","26"],["06","26"],["06","27"],["06","28"],["06","30"],["06","31"],["06","32"],["06","33"],["06","34"],["06","35"],["06","36"],["06","37"],["06","39"],["06","40"],["06","42"],["06","43"],["06","44"],["06","46"],["06","47"],["06","48"],["06","49"],["07","01"],["07","02"],["07","03"],["07","04"],["07","05"],["07","06"],["07","07"],["07","08"],["07","09"],["07","10"],["07","11"],["07","13"],["07","14"],["07","15"],["07","17"],["07","18"],["07","20"],["07","21"],["07","22"],["07","24"],["07","25"],["07","27"],["07","28"],["07","29"],["07","31"],["07","32"],["07","33"],["07","34"],["07","35"],["07","36"],["07","38"],["07","39"],["07","41"],["07","42"],["08","04"],["08","05"],["08","07"],["08","08"],["08","09"],["08","10"],["08","12"],["08","14"],["08","15"],["08","16"],["08","17"],["08","18"],["08","19"],["08","21"],["08","22"],["08","24"],["09","02"],["09","04"],["09","08"],["09","09"],["09","10"],["09","11"],["09","12"],["09","13"],["09","14"],["09","16"],["09","17"],["09","18"],["09","19"],["09","20"],["10","01"],["10","04"],["10","05"],["10","06"],["10","09"],["10","11"],["10","12"],["10","13"],["10","14"],["10","15"],["10","16"],["10","17"],["10","20"],["10","21"],["10","22"],["10","24"],["10","25"],["10","26"],["10","27"],["10","28"],["10","30"],["10","31"],["10","33"],["10","34"],["10","35"],["10","36"],["10","39"],["10","40"],["11","02"],["11","03"],["11","05"],["11","06"],["11","08"],["11","09"],["11","10"],["11","11"],["11","13"],["11","15"],["11","16"],["11","19"],["11","20"],["11","21"],["11","23"],["11","26"],["11","27"],["11","28"],["11","33"],["11","34"],["12","02"],["12","03"],["12","04"],["12","05"],["12","06"],["12","10"],["12","14"],["12","18"],["12","19"],["14","05"],["14","07"],["14","08"],["14","09"],["14","10"],["14","11"],["14","12"],["14","13"],["14","14"],["14","15"],["14","16"],["14","17"],["14","18"],["14","19"],["14","20"],["14","27"],["14","30"],["15","01"],["15","02"],["15","03"],["15","04"],["15","06"],["15","08"],["15","09"],["15","11"],["15","13"],["15","14"],["15","16"],["15","17"],["15","18"],["15","19"],["15","20"],["15","21"],["15","24"],["16","01"],["16","04"],["16","05"],["16","07"],["16","09"],["16","10"],["16","11"],["16","12"],["16","14"],["16","15"],["16","16"],["16","17"],["16","18"],["16","19"],["16","21"],["16","22"],["16","23"],["16","24"],["16","25"],["16","27"],["16","28"],["16","29"],["16","30"],["16","31"],["16","32"],["16","33"],["16","34"],["16","35"],["16","36"],["16","38"],["16","39"],["16","40"],["16","42"],["16","44"],["17","01"],["17","02"],["17","03"],["17","04"],["17","05"],["17","06"],["17","07"],["17","08"],["17","09"],["17","10"],["17","11"],["17","12"],["17","14"],["17","15"],["17","16"],["17","17"],["17","19"],["17","20"],["17","21"],["17","22"],["18","01"],["18","02"],["18","03"],["18","05"],["18","06"],["18","07"],["18","08"],["18","09"],["18","10"],["18","11"],["18","12"],["18","13"],["18","14"],["18","15"],["18","17"],["18","18"],["18","19"],["18","20"],["18","21"],["18","22"],["18","23"],["18","24"],["18","25"],["18","26"],["18","27"],["18","28"],["18","29"],["18","30"],["18","30"],["18","32"],["18","33"],["18","34"],["18","35"],["19","01"],["19","02"],["19","03"],["19","04"],["19","05"],["19","06"],["19","07"],["19","08"],["19","09"],["19","10"],["19","12"],["19","15"],["19","16"],["19","17"],["19","18"],["19","18"],["19","19"],["19","20"],["19","21"],["19","22"],["19","23"],["20","03"],["20","04"],["20","05"],["20","08"],["20","09"],["20","10"],["20","11"],["20","13"],["20","14"],["20","17"],["20","21"],["20","22"],["20","23"],["20","24"],["20","25"],["20","27"],["20","28"],["20","29"],["20","32"],["20","33"],["20","34"],["21","02"],["21","03"],["21","05"],["21","06"],["21","08"],["21","09"],["21","11"],["21","12"],["21","14"],["21","15"],["21","18"],["21","19"],["21","20"],["21","23"],["21","24"],["22","01"],["22","02"],["22","03"],["22","04"],["22","05"],["22","06"],["22","08"],["22","10"],["22","11"],["22","13"],["22","14"],["22","15"],["22","16"],["22","17"],["22","18"],["22","20"],["22","21"],["23","01"],["23","02"],["23","04"],["23","05"],["23","09"],["23","10"],["23","11"],["23","12"],["23","13"],["23","15"],["23","17"],["23","18"],["23","19"],["23","20"],["23","21"],["23","22"],["23","23"],["23","24"],["23","25"],["23","26"],["23","27"],["23","28"],["23","29"],["23","30"],["23","32"],["23","33"],["23","34"],["23","35"],["23","36"],["23","38"],["23","39"],["24","01"],["24","02"],["24","04"],["24","05"],["24","06"],["24","07"],["24","08"],["24","09"],["24","10"],["24","11"],["24","13"],["24","14"],["24","15"],["24","16"],["24","17"],["24","18"],["24","21"],["24","22"],["24","25"],["24","26"],["24","27"],["24","28"],["24","30"],["24","31"],["24","32"],["24","33"],["24","34"],["24","35"],["24","36"],["24","39"],["24","40"],["25","01"],["25","02"],["25","03"],["25","05"],["25","06"],["25","08"],["25","09"],["25","15"],["25","17"],["25","18"],["25","19"],["25","20"],["25","21"],["25","23"],["25","24"],["25","25"],["25","26"],["25","27"],["25","28"],["25","29"],["25","31"],["25","32"],["25","33"],["25","34"],["25","36"],["25","37"],["25","38"],["25","39"],["25","40"],["25","41"],["25","42"],["25","43"],["26","04"],["26","05"],["26","06"],["26","08"],["26","09"],["26","11"],["26","12"],["26","13"],["26","14"],["26","17"],["26","18"],["26","19"],["26","20"],["26","23"],["26","24"],["26","25"],["26","26"],["26","27"],["26","29"],["26","30"],["26","31"],["26","32"],["27","01"],["27","18"],["27","19"],["27","21"],["27","22"],["27","23"],["27","24"],["27","25"],["27","26"],["27","27"],["27","31"],["27","32"],["27","33"],["27","38"],["27","39"],["27","40"],["27","41"],["27","42"],["28","01"],["28","02"],["28","03"],["28","07"],["28","10"],["28","12"],["28","13"],["28","15"],["28","16"],["29","01"],["29","03"],["29","04"],["29","05"],["29","10"],["29","12"],["29","16"],["29","17"],["29","18"],["29","20"],["29","21"],["29","23"],["29","24"],["29","25"],["29","26"],["31","03"],["31","07"],["31","12"],["31","13"],["31","20"],["31","21"],["31","23"],["31","24"],["31","27"],["31","28"],["31","29"],["31","32"],["31","33"],["31","34"],["31","37"],["31","38"],["31","43"],["31","45"],["31","47"],["31","49"],["31","53"],["31","55"],["31","56"],["31","57"],["31","58"],["31","59"],["31","60"],["31","62"],["31","65"],["31","66"],["31","67"],["31","68"],["32","01"],["32","02"],["32","04"],["32","06"],["32","07"],["32","08"],["32","09"],["32","10"],["32","11"],["32","13"],["32","14"],["32","17"],["32","25"],["32","27"],["32","28"],["32","29"],["32","31"],["32","32"],["32","33"],["32","34"],["32","35"],["32","37"],["43","02"],["43","04"],["43","05"],["43","06"],["43","07"],["43","13"],["43","14"],["43","15"],["43","16"],["43","17"],["43","19"],["43","20"],["43","25"],["43","26"],["43","28"],["43","33"],["43","34"],["43","37"],["43","38"],["43","39"],["43","41"],["43","43"],["44","01"],["44","02"],["44","07"],["44","09"],["44","10"],["44","11"],["44","13"],["44","14"],["44","17"],["44","18"],["44","19"],["44","23"],["44","25"],["44","29"],["44","30"],["44","31"],["44","34"],["44","35"],["44","36"],["44","37"],["44","38"],["44","40"],["44","41"],["44","42"],["44","43"],["44","44"],["44","45"],["44","47"],["44","50"],["44","51"],["44","56"],["45","01"],["45","02"],["45","05"],["45","06"],["45","07"],["45","07"],["45","08"],["45","09"],["45","10"],["45","11"],["45","12"],["45","13"],["45","14"],["45","15"],["45","16"],["45","17"],["45","18"],["45","19"],["45","20"],["45","21"],["45","22"],["45","23"],["45","24"],["45","25"],["45","26"],["45","27"],["46","01"],["46","02"],["46","03"],["46","04"],["46","05"],["46","07"],["46","08"],["46","09"],["46","10"],["46","11"],["46","12"],["46","18"],["46","19"],["46","20"],["46","21"],["46","22"],["46","24"],["46","25"],["46","26"],["46","28"],["46","29"],["46","30"],["46","31"],["46","32"],["46","33"],["46","34"],["46","35"],["46","36"],["46","37"],["46","38"],["46","39"],["46","40"],["46","41"],["46","42"],["46","43"],["46","44"],["46","45"],["46","46"],["47","01"],["47","02"],["47","03"],["47","04"],["47","05"],["47","06"],["47","07"],["47","08"],["47","10"],["47","11"],["47","12"],["47","13"],["47","17"],["47","19"],["47","20"],["47","23"],["47","24"],["47","25"],["47","26"],["47","27"],["47","28"],["47","30"],["47","31"],["47","32"],["47","33"],["47","34"],["47","35"],["47","39"],["47","40"],["47","41"],["47","42"],["47","43"],["47","44"],["47","45"],["47","46"],["47","47"],["47","48"],["47","49"],["47","50"],["47","51"],["47","52"],["47","53"],["47","55"],["48","01"],["48","04"],["48","05"],["48","06"],["48","08"],["48","10"],["48","12"],["48","13"],["48","14"],["48","15"],["48","17"],["48","18"],["48","19"],["48","20"],["48","21"],["48","22"],["48","23"],["48","26"],["48","27"],["48","28"],["48","29"],["48","30"],["48","31"],["48","34"],["48","37"],["48","39"],["48","40"],["48","41"],["48","43"],["48","44"],["48","45"],["48","46"],["48","47"],["48","48"],["48","50"],["48","52"],["48","53"],["48","54"],["48","55"],["48","58"],["48","60"],["49","01"],["49","02"],["49","04"],["49","07"],["49","08"],["49","10"],["49","12"],["49","14"],["49","15"],["49","17"],["49","18"],["49","19"],["49","20"],["49","21"],["49","22"],["49","23"],["49","24"],["49","25"],["49","26"],["49","27"],["50","01"],["50","02"],["50","03"],["50","04"],["50","05"],["50","07"],["50","10"],["50","11"],["50","13"],["50","14"],["50","15"],["50","16"],["50","17"],["50","18"],["50","19"],["50","20"],["50","22"],["50","23"],["50","24"],["50","25"],["50","26"],["50","27"],["50","28"],["50","29"],["50","30"],["51","01"],["51","02"],["51","04"],["51","05"],["51","09"],["51","10"],["51","11"],["51","12"],["51","13"],["51","14"],["51","15"],["51","16"],["51","17"],["51","18"],["51","19"],["51","20"],["51","21"],["51","22"],["51","24"],["51","25"],["51","26"],["51","27"],["51","28"],["51","29"],["51","30"],["51","31"],["51","32"],["51","33"],["51","34"],["51","35"],["51","36"],["51","37"],["52","02"],["52","03"],["52","07"],["52","08"],["52","10"],["52","11"],["52","12"],["52","13"],["52","14"],["52","15"],["52","16"],["52","17"],["52","19"],["52","20"],["52","21"],["52","22"],["52","25"],["52","26"],["53","01"],["53","02"],["53","04"],["53","05"],["53","06"],["53","07"],["53","08"],["53","09"],["53","09"],["53","10"],["53","12"],["53","13"],["53","14"],["53","15"],["53","16"],["53","17"],["53","19"],["53","20"],["53","23"],["53","25"],["53","27"],["53","28"],["53","29"],["53","30"],["53","31"],["53","32"],["53","33"],["53","34"],["53","35"],["53","38"],["54","01"],["54","02"],["54","03"],["54","04"],["54","05"],["54","07"],["54","08"],["54","09"],["54","10"],["54","12"],["54","16"],["54","20"],["54","22"],["54","23"],["54","24"],["54","25"],["54","26"],["54","28"],["54","29"],["55","01"],["55","03"],["55","04"],["55","05"],["55","06"],["55","07"],["55","08"],["55","09"],["55","10"],["55","11"],["55","14"],["55","15"],["55","19"],["55","20"],["55","21"],["55","22"],["55","23"],["55","24"],["55","26"],["55","27"],["55","28"],["55","28"],["55","30"],["55","31"],["55","32"],["55","33"],["55","34"],["55","35"],["55","36"],["55","37"],["55","38"],["55","39"],["55","41"],["55","42"],["55","43"],["55","45"],["55","46"],["55","47"],["55","48"],["55","49"],["56","01"],["56","02"],["56","03"],["56","04"],["56","05"],["56","06"],["56","07"],["56","09"],["56","12"],["56","13"],["56","14"],["56","15"],["56","16"],["56","17"],["56","18"],["56","19"],["56","20"],["56","21"],["56","25"],["56","26"],["56","27"],["57","01"],["57","02"],["57","03"],["57","04"],["57","05"],["57","06"],["57","07"],["57","08"],["57","09"],["57","10"],["57","11"],["57","12"],["57","13"],["57","14"],["57","17"],["57","18"],["57","19"],["57","20"],["57","21"],["57","22"],["58","01"],["58","02"],["58","03"],["58","04"],["58","05"],["58","06"],["58","07"],["58","08"],["58","09"],["58","12"],["58","13"],["58","14"],["58","16"],["58","17"],["58","18"],["58","19"],["58","20"],["58","21"],["58","24"],["58","25"],["58","26"],["58","27"],["58","28"],["58","29"],["59","01"],["59","03"],["59","05"],["59","06"],["59","07"],["59","08"],["59","09"],["59","10"],["59","11"],["59","13"],["59","14"],["59","16"],["59","17"],["59","18"],["59","19"],["59","20"],["59","21"],["59","22"],["59","23"],["59","24"],["59","25"],["59","26"],["59","27"],["59","29"],["59","30"],["59","31"],["59","32"],["59","33"],["59","34"],["60","01"],["60","02"],["60","03"],["60","05"],["60","06"],["60","07"],["60","08"],["60","09"],["60","10"],["60","11"],["60","15"],["60","16"],["60","22"],["60","23"],["60","24"],["60","25"],["60","26"],["60","28"],["60","29"],["60","30"],["60","31"],["60","32"],["60","33"],["60","34"],["60","35"],["61","01"],["61","02"],["61","02"],["61","03"],["61","04"],["61","05"],["61","06"],["61","07"],["61","08"],["61","09"],["61","10"],["61","11"],["61","12"],["61","13"],["61","15"],["61","16"],["61","17"],["61","18"],["61","19"],["61","20"],["61","21"],["61","23"],["61","24"],["61","27"],["61","28"],["61","29"],["61","30"],["61","31"],["61","33"],["61","34"],["61","35"],["61","36"],["61","37"],["61","38"],["61","39"],["61","40"],["61","41"],["61","42"],["61","43"],["61","44"],["62","01"],["62","02"],["62","03"],["62","04"],["62","05"],["62","06"],["62","08"],["62","09"],["62","10"],["62","11"],["62","13"],["62","14"],["62","15"],["62","16"],["62","17"],["62","18"],["62","19"],["62","20"],["62","21"],["62","22"],["62","23"],["62","24"],["62","25"],["62","26"],["62","27"],["63","02"],["63","05"],["63","10"],["63","11"],["63","15"],["63","16"],["63","18"],["63","19"],["63","21"],["63","22"],["63","23"],["63","24"],["63","25"],["63","26"],["63","27"],["63","31"],["63","32"],["63","35"],["63","96"],["64","03"],["64","04"],["64","06"],["64","07"],["65","01"],["65","02"],["65","03"],["65","04"],["65","05"],["65","06"],["65","07"],["65","08"],["65","09"],["65","10"],["65","11"],["65","12"],["65","13"],["65","14"],["65","15"],["65","18"],["65","20"],["65","21"],["65","23"],["65","24"],["65","25"],["65","26"],["65","27"],["65","28"],["65","29"],["65","30"],["65","31"],["65","34"],["65","39"],["65","40"],["67","01"],["67","03"],["67","04"],["67","05"],["67","06"],["67","07"],["67","09"],["67","10"],["67","11"],["67","13"],["67","15"],["67","16"],["67","17"],["67","18"],["67","20"],["67","21"],["67","22"],["67","23"],["67","24"],["67","25"],["67","26"],["67","27"],["67","29"],["67","31"],["67","32"],["68","02"],["68","03"],["68","04"],["68","05"],["68","09"],["68","10"],["68","12"],["68","14"],["68","15"],["68","16"],["68","17"],["68","18"],["68","19"],["68","20"],["68","21"],["69","01"],["69","02"],["69","03"],["69","05"],["69","06"],["69","08"],["69","09"],["69","12"],["69","13"],["69","14"],["69","15"],["69","16"],["69","17"],["69","18"],["69","19"],["69","20"],["69","20"],["69","22"],["69","23"],["69","25"],["69","26"],["70","01"],["70","02"],["70","03"],["70","04"],["70","05"],["70","07"],["70","08"],["70","09"],["70","10"],["70","11"],["70","12"],["70","13"],["70","15"],["70","16"],["70","17"],["70","18"],["70","19"],["70","20"],["70","21"],["70","22"],["70","23"],["70","24"],["70","25"],["70","26"],["70","28"],["70","29"],["70","30"],["70","31"],["70","32"],["70","33"],["70","35"],["70","36"],["70","37"],["70","38"],["70","40"],["70","41"],["70","43"],["70","44"],["70","46"],["70","47"],["71","02"],["71","03"],["71","04"],["71","05"],["71","06"],["71","07"],["71","08"],["71","11"],["71","12"],["71","14"],["71","15"],["71","17"],["71","18"],["71","19"],["71","20"],["71","21"],["71","22"],["71","23"],["71","24"],["71","25"],["71","26"],["71","27"],["71","28"],["71","29"],["71","30"],["71","31"],["71","32"],["71","33"],["71","34"],["71","36"],["71","38"],["71","39"],["71","40"],["71","41"],["71","42"],["71","43"],["71","44"],["71","45"],["71","46"],["71","47"],["71","48"],["71","49"],["71","50"],["71","51"],["71","52"],["71","53"],["71","55"],["71","56"],["71","57"],["71","59"],["71","61"],["71","62"],["71","63"],["71","64"],["71","65"],["71","66"],["72","01"],["72","02"],["72","03"],["72","04"],["72","06"],["72","07"],["72","08"],["72","11"],["72","15"],["72","16"],["72","17"],["72","17"],["72","19"],["72","20"],["72","21"],["72","22"],["72","25"],["72","26"],["72","27"],["72","28"],["72","29"],["72","30"],["72","32"],["72","33"],["72","34"],["72","35"],["72","37"],["72","38"],["72","39"],["72","40"],["73","01"],["73","02"],["73","03"],["73","04"],["73","05"],["73","06"],["73","07"],["73","08"],["73","09"],["73","10"],["73","11"],["73","12"],["73","13"],["73","14"],["73","15"],["73","16"],["73","18"],["73","19"],["73","21"],["73","23"],["73","24"],["73","26"],["73","29"],["73","30"],["73","32"],["73","33"],["73","34"],["73","35"],["73","36"],["73","37"],["73","39"],["73","40"],["73","44"],["73","48"],["73","49"],["73","53"],["73","54"],["73","56"],["74","01"],["74","02"],["74","03"],["74","04"],["74","05"],["74","08"],["74","10"],["74","11"],["74","12"],["74","13"],["74","14"],["74","15"],["74","16"],["74","17"],["74","18"],["74","19"],["74","20"],["74","21"],["74","22"],["74","23"],["74","24"],["74","25"],["74","26"],["74","27"],["74","28"],["74","30"],["74","31"],["74","32"],["74","33"],["74","34"],["74","35"],["74","36"],["75","01"],["75","02"],["75","03"],["75","06"],["75","07"],["75","11"],["75","12"],["76","01"],["76","02"],["76","03"],["76","05"],["76","06"],["76","07"],["76","07"],["76","08"],["76","09"],["76","12"],["76","13"],["77","01"],["77","03"],["77","04"],["77","06"],["77","07"],["77","08"],["77","09"],["77","10"],["77","11"],["77","12"],["77","14"],["77","15"],["77","16"],["77","17"],["77","20"],["77","24"],["77","26"],["77","28"],["77","29"],["77","30"],["77","31"],["77","32"],["77","33"],["77","34"],["77","35"],["77","36"],["77","37"],["77","38"],["77","40"],["77","41"],["77","42"],["77","43"],["77","44"],["77","46"],["77","47"],["77","48"],["77","49"],["77","50"],["77","51"],["77","52"],["77","53"],["77","54"],["77","55"],["77","57"],["77","60"]]
+};
+const pmAreaOptions = { '11': ['25','33'] };
+const pmSectorOptions = { '11__25': ['23','25'], '11__33': ['26','27','29'] };
+
+function pmUpdateAreas(){
+  const gov = document.getElementById('pm-gov').value;
+  const areaSel = document.getElementById('pm-area');
+  const sectorSel = document.getElementById('pm-sector');
+  sectorSel.innerHTML = '<option value="">اختر المنطقة أولاً</option>';
+  pmResetTable();
+  if(!gov){
+    areaSel.innerHTML = '<option value="">اختر المحافظة أولاً</option>';
+    return;
+  }
+  const opts = pmAreaOptions[gov] || [];
+  if(opts.length === 0){
+    areaSel.innerHTML = '<option value="">لا توجد مناطق مسجلة لهذه المحافظة بعد</option>';
+    return;
+  }
+  areaSel.innerHTML = '<option value="">اختر...</option>' + opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+function pmUpdateSectors(){
+  const gov = document.getElementById('pm-gov').value;
+  const area = document.getElementById('pm-area').value;
+  const sectorSel = document.getElementById('pm-sector');
+  pmResetTable();
+  if(!area){
+    sectorSel.innerHTML = '<option value="">اختر المنطقة أولاً</option>';
+    return;
+  }
+  const key = gov + '__' + area;
+  const opts = pmSectorOptions[key] || [];
+  if(opts.length === 0){
+    sectorSel.innerHTML = '<option value="">لا توجد قطاعات مسجلة لهذه المنطقة بعد</option>';
+    return;
+  }
+  sectorSel.innerHTML = '<option value="">اختر...</option>' + opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+}
+
+function pmResetTable(){
+  document.getElementById('pm-table-panel').classList.add('report-hidden');
+  document.getElementById('pm-empty-msg').style.display = 'block';
+  document.getElementById('pm-tbody').innerHTML = '';
+  updateFabVisibility();
+}
+
+function pmLoadSectorData(){
+  const gov = document.getElementById('pm-gov').value;
+  const area = document.getElementById('pm-area').value;
+  const sector = document.getElementById('pm-sector').value;
+  if(!sector){ pmResetTable(); return; }
+
+  const key = gov + '__' + area + '__' + sector;
+  const rows = pmSectorData[key];
+
+  if(!rows || rows.length === 0){
+    document.getElementById('pm-empty-msg').innerHTML = '<div class="empty-note">لا توجد بيانات عمارات مسجلة لهذا القطاع بعد</div>';
+    document.getElementById('pm-empty-msg').style.display = 'block';
+    document.getElementById('pm-table-panel').classList.add('report-hidden');
+    updateFabVisibility();
+    return;
+  }
+
+  document.getElementById('pm-empty-msg').style.display = 'none';
+  document.getElementById('pm-table-panel').classList.remove('report-hidden');
+  document.getElementById('pm-table-title').textContent = `بيانات العمارات - ${gov} / ${area} / ${sector}`;
+  document.getElementById('pm-table-count').textContent = `عدد العمارات: ${rows.length}`;
+
+  /* تصنيف أعطال العبث - قائمة ثابتة */
+  const tamperingOptions = ['عمل سيراميك على التركيبات','عمل مصطبة على الشاكوش','تعديل مسار مخالف','أخرى'];
+
+  const radioCell = (name) => `<td><input type="radio" name="${name}"></td>`;
+  const tamperingSelect = (rowId) => `
+    <select class="classify-dd" id="classify-${rowId}" disabled>
+      <option value="">—</option>
+      ${tamperingOptions.map(o=>`<option value="${o}">${o}</option>`).join('')}
+    </select>`;
+
+  const html = rows.map((r, idx) => {
+    const [block, building] = r;
+    const rowId = `pm-row-${idx}`;
+    return `<tr>
+      <td class="row-label">${block}</td>
+      <td class="row-label">${building}</td>
+      ${radioCell(rowId+'-paint')}${radioCell(rowId+'-paint')}
+      ${radioCell(rowId+'-clamps')}${radioCell(rowId+'-clamps')}
+      ${radioCell(rowId+'-hammer')}${radioCell(rowId+'-hammer')}
+      ${radioCell(rowId+'-bracket')}${radioCell(rowId+'-bracket')}
+      <td><input type="radio" name="${rowId}-tampering" onchange="pmToggleClassify('${rowId}', true)"></td>
+      <td><input type="radio" name="${rowId}-tampering" onchange="pmToggleClassify('${rowId}', false)"></td>
+      <td>${tamperingSelect(rowId)}</td>
+      <td><input type="date"></td>
+      <td><input type="text" placeholder="شرح الملاحظة"></td>
+      <td><input type="date"></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('pm-tbody').innerHTML = html;
+  updateFabVisibility();
+}
+
+/* إظهار/إخفاء قائمة تصنيف أعطال العبث حسب اختيار يوجد/لا يوجد */
+function pmToggleClassify(rowId, show){
+  const sel = document.getElementById('classify-'+rowId);
+  if(!sel) return;
+  sel.disabled = !show;
+  if(!show) sel.value = '';
+}
+
+function pmSaveAll(){
+  alert('تم حفظ بيانات الصيانة الوقائية لهذا القطاع (نموذج توضيحي - التخزين الفعلي سيتم عند ربط الموقع بقاعدة البيانات)');
+}
+
+/* ============ زرار الحفظ الطافي: يختفي مع نزول السكرول ويظهر تاني مع الوقوف/الصعود ============ */
+let lastScrollY = window.scrollY;
+let scrollTimer = null;
+
+function updateFabVisibility(){
+  const fab = document.getElementById('fabSaveBtn');
+  const tablePanel = document.getElementById('pm-table-panel');
+  const hasData = currentPage === 'facility-followup' && tablePanel && !tablePanel.classList.contains('report-hidden');
+  if(!hasData){
+    fab.classList.add('fab-hidden');
+  } else {
+    fab.classList.remove('fab-hidden');
+  }
+}
+
+window.addEventListener('scroll', () => {
+  const fab = document.getElementById('fabSaveBtn');
+  const tablePanel = document.getElementById('pm-table-panel');
+  const hasData = currentPage === 'facility-followup' && tablePanel && !tablePanel.classList.contains('report-hidden');
+  if(!hasData) return;
+
+  const currentY = window.scrollY;
+  if(currentY > lastScrollY && currentY > 80){
+    fab.classList.add('fab-hidden');
+  } else {
+    fab.classList.remove('fab-hidden');
+  }
+  lastScrollY = currentY;
+
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    fab.classList.remove('fab-hidden');
+  }, 600);
+});
+
+updateFabVisibility();
+
+function showPage(id){
+  document.querySelectorAll('[data-pageview]').forEach(p=>p.style.display='none');
+  const target = document.querySelector(`[data-pageview="${id}"]`);
+  if(target) target.style.display='block';
+
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-link[data-page="${id}"]`);
+  if(btn) btn.classList.add('active');
+
+  document.querySelectorAll('.nav-head').forEach(h=>h.classList.remove('active'));
+  const meta = pageMeta[id];
+  if(meta){
+    const groupHead = document.querySelector(`.nav-head[data-group="${meta.group}"]`);
+    if(groupHead){
+      groupHead.classList.add('active');
+      const sub = document.querySelector(`.nav-sub[data-sub="${meta.group}"]`);
+      if(sub && !sub.classList.contains('open')){
+        sub.classList.add('open');
+        groupHead.classList.add('open');
+      }
+    }
+  }
+  window.scrollTo(0,0);
+  closeSidebar();
+  currentPage = id;
+  updateFabVisibility();
+}
+
+showPage('home');
+document.querySelector('.nav-head[data-group="home"]').classList.add('active');
+</script>
+
+</body>
+</html>
